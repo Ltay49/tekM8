@@ -79,8 +79,8 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   sectionTitle: {
+    fontFamily: 'Montserrat_700Bold', 
     fontSize: 20,
-    fontWeight: '700',
     color: '#111827', // dark slate gray
     marginBottom: 12,
   },

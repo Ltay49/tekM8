@@ -29,16 +29,20 @@ export default function HowToUpload() {
       </TouchableOpacity>
 
       {expanded && (
-        <View style={styles.content}>
-          {instructions.map((item, index) => (
-            <Text key={index} style={styles.step}>
-              {index + 1}. {item}
-            </Text>
-          ))}
-          <Text style={styles.note}>
-            Please make sure your documents are clear and well-lit for best results.
-          </Text>
-        </View>
+     <View style={styles.content}>
+     {instructions.map((item, index) => (
+       <View key={index} style={styles.stepRow}>
+         <View style={styles.numberCircle}>
+           <Text style={styles.numberText}>{index + 1}</Text>
+         </View>
+         <Text style={styles.step}>{item}</Text>
+       </View>
+     ))}
+     <Text style={styles.note}>
+       Please make sure your documents are clear and well-lit for best results.
+     </Text>
+   </View>
+   
       )}
     </View>
   );
@@ -46,7 +50,7 @@ export default function HowToUpload() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#f5f5f7',
+    backgroundColor: '#F4F7FA',
     borderRadius: 10,
     padding: 16,
     margin: 16,
@@ -61,19 +65,45 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 20,
+    fontFamily: 'Montserrat_400Regular',
+    fontSize: 18,
     fontWeight: '700',
     color: '#333',
   },
   content: {
     marginTop: 12,
   },
+  stepRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
+  
+  numberCircle: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: '#007AFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+    marginTop: 2,
+  },
+  
+  numberText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+    fontFamily: 'Montserrat_400Regular',
+  },
   step: {
+    flex: 1,
+    fontFamily: 'Montserrat_400Regular',
     fontSize: 16,
-    marginBottom: 10,
-    color: '#555',
+    color: '#333',
     lineHeight: 22,
   },
+  
   note: {
     marginTop: 12,
     fontSize: 14,

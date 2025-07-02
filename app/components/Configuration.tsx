@@ -2,20 +2,20 @@ import { useRouter } from 'expo-router';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-export default function DocumentControl() {
+export default function Configuration() {
   const router = useRouter();
 
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        onPress={() => router.push('/screens/documentControlScreen')}
+        onPress={() => router.push('/screens/configurationScreen')}
         style={styles.button}
         activeOpacity={0.7}
       >
         <View style={styles.buttonContent}>
-          <Ionicons name="document-outline" size={24} color="#fff" />
-          <Text style={styles.title}>Document Control</Text>
-          <Ionicons name="arrow-forward" size={24} color="#fff" style={styles.icon} />
+          <Ionicons name="settings-outline" size={24} color="#fff" />
+          <Text style={styles.title}>Configuration</Text>
+          <Ionicons name="arrow-forward" size={24} color="#fff" />
         </View>
       </TouchableOpacity>
     </View>
@@ -23,7 +23,10 @@ export default function DocumentControl() {
 }
 
 const styles = StyleSheet.create({
-  container: { alignItems: 'center', width: '100%' },
+  container: {
+    alignItems: 'center',
+    width: '100%',
+  },
   button: {
     width: '100%',
     backgroundColor: '#007AFF',
@@ -41,11 +44,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  title: { fontSize: 18,
-    fontFamily: 'Montserrat_700Bold', 
-    color: '#fff' 
-  },
-  icon: { 
-    marginLeft: 10 
+  title: {
+    fontSize: 18,
+    fontFamily: 'Montserrat_700Bold',
+    color: '#fff',
   },
 });

@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, LayoutAnimation, Platform, UIManager } from 'react-native';
-import { AntDesign } from '@expo/vector-icons'; // optional for icons
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  LayoutAnimation,
+  Platform,
+  UIManager,
+  Linking,
+} from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
 
-// Enable layout animation for Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
@@ -15,27 +23,50 @@ export default function HowToWork() {
     setExpanded(!expanded);
   };
 
+  const handleLinkPress = () => {
+    // Open a URL or navigate to a licensing/documentation page
+    Linking.openURL('https://your-documentation-link.com'); 
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={toggleExpand} style={styles.header}>
-        <Text style={styles.title}>How to Work</Text>
-        <AntDesign name={expanded ? 'up' : 'down'} size={20} color="#555" />
+        <Text style={styles.title}>How it Works</Text>
+        <AntDesign name={expanded ? 'up' : 'down'} size={20} color="#007AFF" />
       </TouchableOpacity>
 
       {expanded && (
         <View style={styles.content}>
           <Text style={styles.step}>
-            1. Upload your onboarding documentation{'\n'}e.g. Induction checklist and PPE sheet
+            <Text style={styles.stepNumber}>1. </Text>
+            Configure your project settings, add your project details, this will aid the automation of the induction process.
           </Text>
+
           <Text style={styles.step}>
-            2. Use the camera or upload photos of your CITB construction cards
+            <Text style={styles.stepNumber}>2. </Text>
+            Upload your onboarding documentation.{'\n'}
+            <Text style={styles.stepDetail}>e.g. Induction checklist and PPE sheet.</Text>
           </Text>
+
           <Text style={styles.step}>
-            3. We'll extract your details using Google Vision API
+            <Text style={styles.stepNumber}>3. </Text>
+            Use the camera or upload photos of your CITB construction cards.
           </Text>
+
+          <Text style={styles.step}>
+            <Text style={styles.stepNumber}>4. </Text>
+            We'll extract your details using Google Vision API.
+          </Text>
+
           <Text style={styles.note}>
-            Please make sure your documents are clear and well-lit for best results.
+            ⚠️ Make sure your documents are clear and well-lit for best results.
           </Text>
+
+          <TouchableOpacity onPress={handleLinkPress} style={styles.linkContainer}>
+            <Text style={styles.linkText}>
+              For licensing and documentation click here.
+            </Text>
+          </TouchableOpacity>
         </View>
       )}
     </View>
@@ -44,14 +75,10 @@ export default function HowToWork() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#f5f5f7',
-    borderRadius: 10,
-    padding: 16,
-    margin: 16,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    padding: 12,
+    margin: 8,
+    backgroundColor: '#F4F7FA',
+    borderRadius: 12,
   },
   header: {
     flexDirection: 'row',
@@ -59,23 +86,44 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#333',
+    fontSize: 22,
+    fontFamily: 'Montserrat_800ExtraBold',
+    color: '#1A1A1A',
   },
   content: {
-    marginTop: 12,
+    marginTop: 16,
   },
   step: {
     fontSize: 16,
-    marginBottom: 10,
+    fontFamily: 'Montserrat_400Regular',
+    color: '#333',
+    lineHeight: 24,
+    marginBottom: 12,
+  },
+  stepNumber: {
+    fontFamily: 'Montserrat_700Bold',
+    color: '#007AFF',
+  },
+  stepDetail: {
+    fontStyle: 'italic',
+    fontFamily: 'Montserrat_400Regular',
     color: '#555',
-    lineHeight: 22,
+    fontSize: 15,
   },
   note: {
-    marginTop: 12,
     fontSize: 14,
-    fontStyle: 'italic',
+    fontFamily: 'Montserrat_400Regular',
     color: '#888',
+    fontStyle: 'italic',
+    marginTop: 10,
+  },
+  linkContainer: {
+    marginTop: 20,
+  },
+  linkText: {
+    color: '#007AFF',
+    fontFamily: 'Montserrat_700Bold',
+    fontSize: 16,
+    textDecorationLine: 'underline',
   },
 });

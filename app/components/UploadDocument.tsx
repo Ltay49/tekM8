@@ -284,6 +284,7 @@ const styles = StyleSheet.create({
         color: '#333',
     },
     docButtonsRow: {
+        
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
@@ -308,7 +309,7 @@ const styles = StyleSheet.create({
     uploadButtonText: {
         color: '#fff',
         textAlign: 'center',
-        fontWeight: 'bold',
+        fontFamily: 'Montserrat_700Bold', 
         fontSize: 16,
     },
     noDocsText: { textAlign: 'center', color: '#999', fontSize: 16 },

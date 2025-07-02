@@ -1,9 +1,27 @@
 import { Stack, useSegments } from 'expo-router';
+import {
+  useFonts,
+  Montserrat_400Regular,
+  Montserrat_700Bold,
+} from '@expo-google-fonts/montserrat';
+import { Text, View } from 'react-native';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const segments = useSegments() as string[];
-  
   const isIndex = segments.length === 0;
+
+  const [fontsLoaded] = useFonts({
+    Montserrat_400Regular,
+    Montserrat_700Bold,
+  });
+
+  if (!fontsLoaded) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Loading fonts...</Text>
+      </View>
+    );
+  }
 
   return (
     <Stack
@@ -14,9 +32,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         headerStyle: {
           backgroundColor: '#00AEEF',
         },
-        headerTintColor: '#fff',
+        headerTintColor: 'black',
         headerTitleStyle: {
-          fontWeight: '700',
+          fontFamily: 'Montserrat_700Bold',
           fontSize: 18,
         },
       }}
@@ -25,6 +43,3 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </Stack>
   );
 }
-
-
-

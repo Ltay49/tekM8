@@ -92,7 +92,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   title: {
-    fontSize: 22,
+    fontFamily: 'Montserrat_700Bold', 
+    fontSize: 18,
     fontWeight: '700',
     marginBottom: 16,
   },
@@ -110,6 +111,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ddd',
   },
   docName: {
+    fontFamily: 'Montserrat_700Bold', 
     fontSize: 16,
     color: '#333',
     flex: 1,
