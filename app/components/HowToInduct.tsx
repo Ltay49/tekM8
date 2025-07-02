@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: '700',
+   fontFamily:'Montserrat_400Regular',
     color: '#333',
   },
   content: {

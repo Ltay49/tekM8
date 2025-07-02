@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: '700',
+    fontFamily: 'Montserrat_700Bold',
     color: '#0072CE',
     marginBottom: 12,
   },
