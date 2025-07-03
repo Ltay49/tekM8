@@ -1,5 +1,8 @@
-# Ignore the service account key
+# Ignore the Google SDK directory
+TekM8-Back/google-cloud-sdk/
+
+# Ignore the Vision API key
 src/tekmate-vision-key.json
 
-# Optional: ignore all uploads
+# Ignore uploaded files
 uploads/
