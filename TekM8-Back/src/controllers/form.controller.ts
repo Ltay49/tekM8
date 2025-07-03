@@ -1,17 +1,29 @@
 import { Request, Response } from 'express';
 import { fillFormImage } from '../models/form-filler.model';
+import { convertPdfToImage } from '../utils/pdf-to-image';
 
 export const handleFormFill = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { imagePath, userDetails, checkedItems } = req.body;
+    const pdfPath = req.file?.path;
 
-    if (!imagePath || typeof imagePath !== 'string') {
-      res.status(400).json({ error: 'Missing imagePath' });
+    if (!pdfPath || typeof pdfPath !== 'string') {
+      res.status(400).json({ error: 'Missing uploaded PDF file' });
       return;
     }
 
-    if (!userDetails || typeof userDetails !== 'object') {
-      res.status(400).json({ error: 'Missing userDetails object' });
+    const imagePath = await convertPdfToImage(pdfPath);
+
+    if (!imagePath || typeof imagePath !== 'string') {
+      res.status(500).json({ error: 'PDF to image conversion failed' });
+      return;
+    }
+
+    let userDetails, checkedItems;
+    try {
+      userDetails = JSON.parse(req.body.userDetails);
+      checkedItems = JSON.parse(req.body.checkedItems);
+    } catch (error) {
+      res.status(400).json({ error: 'Invalid JSON in userDetails or checkedItems' });
       return;
     }
 
