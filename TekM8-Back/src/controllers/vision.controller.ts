@@ -1,33 +1,25 @@
-import { Request, Response, NextFunction } from 'express';
-import { analyzeImage } from '../services/vision.service';
+import { Request, Response } from 'express';
+import { extractFromImageWithVision } from '../models/vision.model';
 
-// export const analyzeImageController = async (req: Request, res: Response, next: NextFunction) => {
-//   const { imageBase64 } = req.body;
+export const handleVisionExtract = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const rawImagePath = req.body?.imagePath;
 
-//   if (!imageBase64) {
-//     return res.status(400).json({ error: 'Missing image data' });
-//   }
-
-//   try {
-//     const labels = await analyzeImage(imageBase64);
-//     res.status(200).json({ labels });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
-export const analyzeImageController = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) : Promise<void> =>{
-
-    const { imageBase64 } = req.body;
-      
-    try {
-      const labels = await analyzeImage(imageBase64);
-      res.status(200).json({ labels });
-    } catch (error) {
-      next(error);
+    // ✅ Type narrowing and runtime check
+    if (typeof rawImagePath !== 'string' || rawImagePath.trim() === '') {
+      res.status(400).json({ error: 'imagePath is required and must be a non-empty string.' });
+      return;
     }
-}
+
+    const imagePath: string = rawImagePath.trim(); // ✅ Now TypeScript knows it's a real string
+
+    const result = await extractFromImageWithVision(imagePath);
+    res.json(result);
+  } catch (error) {
+    console.error('❌ Vision API Error:', error);
+    res.status(500).json({ error: 'Failed to process image with Vision API' });
+  }
+};
