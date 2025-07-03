@@ -1,0 +1,5 @@
+# Ignore the service account key
+src/tekmate-vision-key.json
+
+# Optional: ignore all uploads
+uploads/
