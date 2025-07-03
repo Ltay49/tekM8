@@ -1,0 +1,27 @@
+{
+    "imagePath": "/Users/lewistaylor/Desktop/converted-1.png",
+    "userDetails": {
+      "name": "Lewis Taylor",
+      "position": "Supervisor",
+      "date": "02/07/2025",
+      "signature": "L.Taylor",
+      "projectCode": "A123",
+      "inducteeName": "John Doe",
+      "projectName": "Angel Gardens"
+    },
+    "checkedItems": [
+        "Project Name",
+        "Signed Method Statement",
+        "Signed RAMS",
+        "Appropriate PPE",
+        "Will work safely",
+        "Correct Certs",
+        "Knows the fire drill",
+        "Knows appointed First Aider",
+        "Understands Health & Safety",
+        "Had the opportunity to ask questions",
+        "Read and understood"
+      ]
+      
+  }
+  
