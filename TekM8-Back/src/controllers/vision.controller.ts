@@ -31,35 +31,44 @@ export const handleVisionExtract = async (
 
 export const extractCardData = async (req: Request, res: Response): Promise<any> => {
   try {
-    if (!req.file?.path) {
-      return res.status(400).json({ error: 'No image uploaded' });
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+    if (!files?.frontImage?.[0]?.path || !files?.backImage?.[0]?.path) {
+      return res.status(400).json({ error: 'Both frontImage and backImage are required' });
     }
 
-    console.log('🛠️ Received file:', req.file.path);
+    const frontPath = files.frontImage[0].path;
+    const backPath = files.backImage[0].path;
 
-    // 🧠 Perform OCR
-    const [result] = await client.textDetection(req.file.path);
-    const detections = result.textAnnotations || [];
+    const [frontResult] = await client.textDetection(frontPath);
+    const [backResult] = await client.textDetection(backPath);
 
-    const fullText = detections[0]?.description || '';
-    console.log('📄 Full OCR Text:\n', fullText);
+    const frontText = frontResult.textAnnotations?.[0]?.description || '';
+    const backText = backResult.textAnnotations?.[0]?.description || '';
 
-    // 🔍 Example pattern matching (adjust to real data)
-    const nameMatch = fullText.match(/Name[:\s]*([A-Z]+\s[A-Z]+)/i);
-    const regMatch = fullText.match(/REG(?:ISTRATION)? NO\.?\s*[:\-]?\s*(\d{5,})/i);
-    const expiryMatch = fullText.match(/EXPIRES (?:END )?([A-Za-z]+\s\d{4})/i);
+    // 🔍 Extract name by checking uppercase line BEFORE "CONSTRUCTION" or "CSCS"
+    const nameMatch = frontText.match(/(?:\n|^)([A-Z]+\s[A-Z]+)\s*\nREG\.?\s*NO/i);
+    const regMatch = frontText.match(/\b\d{6,10}\b/);
+    const expiryMatch = frontText.match(/EXPIRES(?: END)?[:\s]*([A-Za-z]+\s\d{4})/i);
+    const qualificationMatch = backText.match(/BTEC.*|NVQ.*|Level\s\d.*|Diploma.*|Degree.*/i);
 
-    const data = {
-      fullText,
-      name: nameMatch?.[1] || null,
-      registrationNumber: regMatch?.[1] || null,
-      expiryDate: expiryMatch?.[1] || null,
-    };
-
-    res.json(data);
+    res.json({
+      front: {
+        rawText: frontText,
+        name: nameMatch || null,
+        registrationNumber: regMatch?.[0] || null,
+        expiryDate: expiryMatch?.[1] || null,
+      },
+      back: {
+        rawText: backText,
+        qualification: qualificationMatch?.[0] || null,
+      },
+    });
   } catch (err) {
     console.error('❌ Vision extract error:', err);
-    res.status(500).json({ error: 'Failed to extract text from image' });
+    res.status(500).json({ error: 'Failed to extract text from images' });
   }
 };
+
+
 

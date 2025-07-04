@@ -78,17 +78,28 @@ export const extractFromImageWithVision = async (imagePath: string): Promise<any
     const [result] = await client.textDetection(imagePath);
     const text = result.fullTextAnnotation?.text || '';
   
-    // Basic patterns — you can improve these later
-    const nameMatch = text.match(/([A-Z]+\s[A-Z]+)/);
-    const regMatch = text.match(/Reg(?:\.| No\.|istration)?[:\s]*([0-9]{6,})/i);
-    const expiryMatch = text.match(/Expires(?: End)?[:\s]*([A-Za-z]+\s[0-9]{4})/i);
-    const qualMatch = text.match(/BTEC.*|NVQ.*|Level.*/i);
+    console.log('📄 OCR TEXT:\n', text);
+  
+    // Better name extraction (first all-uppercase full name after "CSCS")
+    const lines = text.split('\n');
+    const nameLine = lines.find(line =>
+      /^[A-Z]+\s[A-Z]+$/.test(line.trim()) && line.trim() !== 'CSCS CONSTRUCTION SKILLS CERTIFICATION SCHEME'
+    );
+  
+    // Better REG NO. extraction — find line with digits after "REG. NO."
+    const regLineIndex = lines.findIndex(line => /REG(ISTRATION)?\.?\s*NO\.?/i.test(line));
+    const regNumber = regLineIndex !== -1 && lines[regLineIndex + 1]
+      ? lines[regLineIndex + 1].match(/\d{6,10}/)?.[0] || null
+      : null;
+  
+    // Match expiry date
+    const expiryMatch = text.match(/EXPIRES(?: END)?\s*([A-Za-z]+\s\d{4})/i);
   
     return {
       rawText: text,
-      name: nameMatch?.[1] || null,
-      regNumber: regMatch?.[1] || null,
+      name: nameLine?.trim() || null,
+      regNumber: regNumber,
       expiry: expiryMatch?.[1] || null,
-      qualification: qualMatch?.[0] || null,
     };
   }
+  
