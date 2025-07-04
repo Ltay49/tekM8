@@ -33,46 +33,58 @@ export default function UploadCSCSCards() {
   const scanSide = async (index: number, side: 'front' | 'back') => {
     const granted = await requestPermissions();
     if (!granted) return Alert.alert('Permission required');
-
+  
     const result = await ImagePicker.launchCameraAsync({ quality: 0.8 });
     if (!result.canceled && result.assets.length > 0) {
       const uri = result.assets[0].uri;
-
+  
       setCards(prev => {
         const updated = [...prev];
         updated[index][side] = uri;
-
-        if (side === 'front') extractCardDetails(uri, index);
-
+  
+        const card = updated[index];
+  
+        // ✅ When both front & back are scanned, extract details
+        if (card.front && card.back) {
+          extractCardDetails(card.front, card.back, index);
+        }
+  
+        // ✅ If this is the last card and now it's complete, add a new empty one
         const isLast = index === updated.length - 1;
-        if (updated[index].front && updated[index].back && isLast) {
+        if (card.front && card.back && isLast) {
           updated.push({ front: null, back: null });
         }
-
+  
         return updated;
       });
     }
   };
+  
 
-  const extractCardDetails = async (imageUri: string, index: number) => {
+  const extractCardDetails = async (frontUri: string, backUri: string, index: number) => {
     try {
       setIsLoading(true);
       const formData = new FormData();
-      formData.append('cardImage', {
-        uri: imageUri,
-        name: 'cscs-card.jpg',
+      formData.append('frontImage', {
+        uri: frontUri,
+        name: 'front.jpg',
         type: 'image/jpeg',
       } as any);
-
+      formData.append('backImage', {
+        uri: backUri,
+        name: 'back.jpg',
+        type: 'image/jpeg',
+      } as any);
+  
       const res = await fetch('http://192.168.0.37:3000/vision/extract', {
         method: 'POST',
         body: formData,
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-
+  
       const data = await res.json();
       console.log('🧠 Extracted CSCS Card Details:', data);
-
+  
       setCards(prev => {
         const updated = [...prev];
         updated[index].result = data;
@@ -85,7 +97,8 @@ export default function UploadCSCSCards() {
       setIsLoading(false);
     }
   };
-
+  
+  
   const handleConfirmAll = () => {
     const completeCards = cards.filter(c => c.front && c.back);
     if (completeCards.length === 0) {
