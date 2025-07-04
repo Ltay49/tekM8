@@ -9,7 +9,15 @@ const upload = multer({ dest: 'uploads/' });
 router.post('/extract-text', handleVisionExtract);
 
 // 🔹 Route for image file uploads (expects image field 'cardImage')
-router.post('/extract', upload.single('cardImage'), extractCardData);
 
-export default router;
+router.post(
+    '/extract',
+    upload.fields([
+      { name: 'frontImage', maxCount: 1 },
+      { name: 'backImage', maxCount: 1 },
+    ]),
+    extractCardData
+  );
+  
+  export default router;
 
