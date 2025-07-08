@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useLayoutEffect } from 'react';
 import HowToOnBoard from '../components/HowToInduct';
 import UploadConstructionCard from '../components/UploadConstructionCard';
+import ReviewCards from '../components/ReviewCards';
 
 export default function OnboardingScreen() {
   const navigation = useNavigation();
@@ -28,7 +29,7 @@ export default function OnboardingScreen() {
     {
       title: 'Review Cards',
       data: ['dummy3'],
-      renderContent: () => <Text style={{ color: '#666' }}>No content yet</Text>,
+      renderContent: () => <ReviewCards />,
     },
     {
       title: 'Compose',
