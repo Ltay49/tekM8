@@ -1,15 +1,12 @@
-import { Stack, useSegments } from 'expo-router';
+import { Slot } from 'expo-router';
 import {
   useFonts,
   Montserrat_400Regular,
   Montserrat_700Bold,
 } from '@expo-google-fonts/montserrat';
-import { Text, View } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const segments = useSegments() as string[];
-  const isIndex = segments.length === 0;
-
+export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     Montserrat_400Regular,
     Montserrat_700Bold,
@@ -17,48 +14,29 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   if (!fontsLoaded) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', borderBottomWidth: 0 }}>
+      <View style={styles.loadingContainer}>
         <Text>Loading fonts...</Text>
       </View>
     );
   }
 
   return (
-    <Stack
-      screenOptions={{
-        title: 'Home',
-        headerBackTitle: '',
-        headerTitleAlign: isIndex ? 'left' : 'left',
-        headerTintColor: 'white',
-        headerShadowVisible: true, // Hide default shadow
-
-        headerStyle: {
-          backgroundColor: '#00AEEF',
-        },
-
-        headerBackground: () => (
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: '#00AEEF',
-              shadowColor: '#fff',
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 1,
-              shadowRadius: 6,
-              elevation: 4, // Android
-            }}
-          />
-        ),
-
-        headerTitleStyle: {
-          fontFamily: 'Montserrat_700Bold',
-          fontSize: 20,
-        },
-      }}
-
-
-    >
-      {children}
-    </Stack>
+    <View style={styles.root}>
+      <Slot />
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: '#0B1A2F',  }
+    ,
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#0B1A2F',
+  },
+});
+

@@ -11,11 +11,23 @@ import {
   Modal,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Card = {
   front: string | null;
   back: string | null;
-  result?: any;
+  result?: {
+    front: {
+      rawText: string;
+      name: string | null;
+      registrationNumber: string | null;
+      expiryDate: string | null;
+    };
+    back: {
+      rawText: string;
+      qualification: string | null;
+    };
+  };
 };
 
 export default function UploadCSCSCards() {
@@ -33,33 +45,29 @@ export default function UploadCSCSCards() {
   const scanSide = async (index: number, side: 'front' | 'back') => {
     const granted = await requestPermissions();
     if (!granted) return Alert.alert('Permission required');
-  
+
     const result = await ImagePicker.launchCameraAsync({ quality: 0.8 });
     if (!result.canceled && result.assets.length > 0) {
       const uri = result.assets[0].uri;
-  
+
       setCards(prev => {
         const updated = [...prev];
         updated[index][side] = uri;
-  
+
         const card = updated[index];
-  
-        // ✅ When both front & back are scanned, extract details
         if (card.front && card.back) {
           extractCardDetails(card.front, card.back, index);
         }
-  
-        // ✅ If this is the last card and now it's complete, add a new empty one
+
         const isLast = index === updated.length - 1;
         if (card.front && card.back && isLast) {
           updated.push({ front: null, back: null });
         }
-  
+
         return updated;
       });
     }
   };
-  
 
   const extractCardDetails = async (frontUri: string, backUri: string, index: number) => {
     try {
@@ -75,16 +83,16 @@ export default function UploadCSCSCards() {
         name: 'back.jpg',
         type: 'image/jpeg',
       } as any);
-  
+
       const res = await fetch('http://192.168.0.37:3000/vision/extract', {
         method: 'POST',
         body: formData,
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-  
+
       const data = await res.json();
       console.log('🧠 Extracted CSCS Card Details:', data);
-  
+
       setCards(prev => {
         const updated = [...prev];
         updated[index].result = data;
@@ -97,17 +105,25 @@ export default function UploadCSCSCards() {
       setIsLoading(false);
     }
   };
-  
-  
-  const handleConfirmAll = () => {
-    const completeCards = cards.filter(c => c.front && c.back);
+
+  const handleConfirmAll = async () => {
+    const completeCards = cards.filter(c => c.front && c.back && c.result);
+
     if (completeCards.length === 0) {
       Alert.alert('No complete cards', 'Please scan both sides of a card before confirming.');
       return;
     }
-    setConfirmedCards(completeCards);
-    Alert.alert('✅ Confirmed', `${completeCards.length} card(s) confirmed.`);
-    setCards([{ front: null, back: null }]);
+
+    try {
+      console.log('📝 Saving these cards to AsyncStorage:\n', JSON.stringify(completeCards, null, 2));
+      await AsyncStorage.setItem('scannedCSCSCards', JSON.stringify(completeCards));
+      setConfirmedCards(completeCards);
+      Alert.alert('✅ Confirmed', `${completeCards.length} card(s) confirmed and saved.`);
+      setCards([{ front: null, back: null }]); // reset scanner
+    } catch (err) {
+      console.error('❌ Failed to save cards:', err);
+      Alert.alert('Save Error', 'Failed to save CSCS card data.');
+    }
   };
 
   return (
@@ -121,7 +137,7 @@ export default function UploadCSCSCards() {
               <>
                 <Image source={{ uri: card.front }} style={styles.thumbnail} />
                 <Pressable style={styles.labelOverlay} onPress={() => setPreviewUri(card.front!)}>
-                  <Text style={styles.labelText}>Preview</Text>
+                  <Text style={styles.labelText}>Front</Text>
                 </Pressable>
               </>
             ) : (
@@ -134,7 +150,7 @@ export default function UploadCSCSCards() {
               <>
                 <Image source={{ uri: card.back }} style={styles.thumbnail} />
                 <Pressable style={styles.labelOverlay} onPress={() => setPreviewUri(card.back!)}>
-                  <Text style={styles.labelText}>Preview</Text>
+                  <Text style={styles.labelText}>Back</Text>
                 </Pressable>
               </>
             ) : (
@@ -146,22 +162,10 @@ export default function UploadCSCSCards() {
 
       {isLoading && <ActivityIndicator size="large" color="#007AFF" style={{ marginVertical: 20 }} />}
 
-      {cards.some(c => c.front && c.back) && (
+      {cards.filter(c => c.front && c.back && c.result).length > 0 && (
         <TouchableOpacity style={styles.confirmButton} onPress={handleConfirmAll}>
           <Text style={styles.confirmText}>Confirm All</Text>
         </TouchableOpacity>
-      )}
-
-      {confirmedCards.length > 0 && (
-        <>
-          <Text style={styles.cardsHeader}>Confirmed Cards:</Text>
-          {confirmedCards.map((card, idx) => (
-            <View key={idx} style={styles.cardRow}>
-              <Image source={{ uri: card.front! }} style={styles.thumbnail} />
-              <Image source={{ uri: card.back! }} style={styles.thumbnail} />
-            </View>
-          ))}
-        </>
       )}
 
       <Modal visible={!!previewUri} transparent animationType="fade">
@@ -185,21 +189,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
-    overflow: 'hidden',
+    position: 'relative',
   },
   thumbnail: { width: '100%', height: '100%', borderRadius: 10 },
   placeholder: { color: '#aaa', textAlign: 'center' },
-  labelOverlay: {
-    position: 'absolute',
-    top: '0%',
-    left:'0%',
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-  justifyContent:'center'
-  },
-  labelText: { color: '#fff', fontWeight: '600', fontSize: 25,    textAlign:'center' },
   confirmButton: {
     backgroundColor: '#FF9500',
     paddingVertical: 14,
@@ -210,12 +203,32 @@ const styles = StyleSheet.create({
   confirmText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
   cardsHeader: { fontSize: 18, fontWeight: '600', marginBottom: 10 },
   cardRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
+  labelOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    paddingVertical: 4,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  labelText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: '600',
+    fontSize: 13,
+  },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.85)',
+    backgroundColor: 'rgba(0,0,0,0.8)',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  fullscreenImage: { width: '95%', height: '60%', borderRadius: 12 },
+  fullscreenImage: {
+    width: '90%',
+    height: '80%',
+    borderRadius: 10,
+    resizeMode: 'contain',
+  },
 });
-
