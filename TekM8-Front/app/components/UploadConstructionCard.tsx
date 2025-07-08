@@ -115,11 +115,10 @@ export default function UploadCSCSCards() {
     }
 
     try {
-      console.log('📝 Saving these cards to AsyncStorage:\n', JSON.stringify(completeCards, null, 2));
       await AsyncStorage.setItem('scannedCSCSCards', JSON.stringify(completeCards));
       setConfirmedCards(completeCards);
       Alert.alert('✅ Confirmed', `${completeCards.length} card(s) confirmed and saved.`);
-      setCards([{ front: null, back: null }]); // reset scanner
+      setCards([{ front: null, back: null }]);
     } catch (err) {
       console.error('❌ Failed to save cards:', err);
       Alert.alert('Save Error', 'Failed to save CSCS card data.');
@@ -160,7 +159,7 @@ export default function UploadCSCSCards() {
         </View>
       ))}
 
-      {isLoading && <ActivityIndicator size="large" color="#007AFF" style={{ marginVertical: 20 }} />}
+      {isLoading && <ActivityIndicator size="large" color="#0A84FF" style={{ marginVertical: 20 }} />}
 
       {cards.filter(c => c.front && c.back && c.result).length > 0 && (
         <TouchableOpacity style={styles.confirmButton} onPress={handleConfirmAll}>
@@ -177,41 +176,55 @@ export default function UploadCSCSCards() {
   );
 }
 
+
 const styles = StyleSheet.create({
-  container: { padding: 10, backgroundColor: '#fff', flex: 1 },
-  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 20 },
-  thumbnailRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 },
+  container: {
+    backgroundColor: '#1F3B60',
+    flex: 1,
+    padding: 20,
+    borderRadius:5
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 20,
+  },
+  thumbnailRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
   thumbnailWrapper: {
     width: '48%',
-    height: 100,
+    height: 120,
+    borderStyle:'dotted',
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: 'white',
+    borderRadius: 8,
+    backgroundColor: '#1C1C1E',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10,
     position: 'relative',
   },
-  thumbnail: { width: '100%', height: '100%', borderRadius: 10 },
-  placeholder: { color: '#aaa', textAlign: 'center' },
-  confirmButton: {
-    backgroundColor: '#FF9500',
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginBottom: 30,
+  thumbnail: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 8,
   },
-  confirmText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
-  cardsHeader: { fontSize: 18, fontWeight: '600', marginBottom: 10 },
-  cardRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
+  placeholder: {
+    color: 'white',
+    fontSize: 14,
+    textAlign: 'center',
+  },
   labelOverlay: {
     position: 'absolute',
     top: 0,
-    left: 0,
-    right: 0,
-    paddingVertical: 4,
+    width: '100%',
     backgroundColor: 'rgba(0,0,0,0.5)',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    paddingVertical: 4,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
   },
   labelText: {
     color: '#fff',
@@ -219,9 +232,21 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 13,
   },
+  confirmButton: {
+    backgroundColor: '#0A84FF',
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  confirmText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 16,
+  },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.8)',
+    backgroundColor: 'rgba(0,0,0,0.85)',
     justifyContent: 'center',
     alignItems: 'center',
   },

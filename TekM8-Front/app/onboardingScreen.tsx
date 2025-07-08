@@ -1,26 +1,20 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, SectionList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useLayoutEffect } from 'react';
-import HowToOnBoard from '../components/HowToInduct';
-import UploadConstructionCard from '../components/UploadConstructionCard';
-import ReviewCards from '../components/ReviewCards';
+import HowToOnBoard from './components/HowToInduct';
+import UploadConstructionCard from './components/UploadConstructionCard';
+import ReviewCards from './components/ReviewCards';
 
 export default function OnboardingScreen() {
   const navigation = useNavigation();
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'Onboarding',
+      headerShown: false, // Hides default header if you're using your own
     });
   }, [navigation]);
 
   const sections = [
-    {
-      title: 'Steps',
-      data: ['dummy1'], // single dummy item, content rendered via section header
-      renderContent: () => <HowToOnBoard />,
-    },
     {
       title: 'Upload Cards',
       data: ['dummy2'],
@@ -33,9 +27,8 @@ export default function OnboardingScreen() {
     },
     {
       title: 'Compose',
-      data: ['dummy3'],
-      renderContent: () => <Text style={{ color: '#666' }}>No content yet</Text>,
-      
+      data: ['dummy4'],
+      renderContent: () => <Text style={styles.placeholder}>No content yet</Text>,
     },
   ];
 
@@ -46,13 +39,12 @@ export default function OnboardingScreen() {
       stickySectionHeadersEnabled={false}
       contentContainerStyle={styles.container}
       renderSectionHeader={({ section }) => (
-        <View style={styles.section}>
+        <View style={styles.card}>
           <Text style={styles.title}>{section.title}</Text>
           {section.renderContent()}
         </View>
       )}
-      renderItem={() => null} // we render all content inside section header, so no items
-      // optional: add some spacing between sections if needed
+      renderItem={() => null}
       SectionSeparatorComponent={() => <View style={{ height: 20 }} />}
     />
   );
@@ -61,24 +53,34 @@ export default function OnboardingScreen() {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: '#f5f5f7',
+    paddingTop:70,
+    backgroundColor: '#0B1A2F', // Match full app dark background
   },
-  section: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    // subtle shadow for iOS
+  
+  card: {
+    backgroundColor: '#D84343',
+    borderRadius:6,
+    paddingTop: 10,
+    borderWidth: 1,
+    // borderColor: '#ffffff33',
     shadowColor: '#000',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.6,
     shadowRadius: 6,
-    shadowOffset: { width: 0, height: 3 },
-    // elevation for Android
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 10,
   },
   title: {
-    fontSize: 22,
-    fontFamily: 'Montserrat_700Bold',
-    color: '#0072CE',
+    padding:5,
+    paddingLeft:10,
+    fontSize: 20,
+    fontWeight: '700',
+    color: 'black',
     marginBottom: 12,
+    textTransform: 'uppercase',
+  },
+  placeholder: {
+    fontSize: 14,
+    color: '#ccc',
+    fontStyle: 'italic',
   },
 });
