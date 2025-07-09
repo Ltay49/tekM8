@@ -13,7 +13,7 @@ export default function Footer() {
                 <Text style={styles.iconLabel}>Home</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.iconButton} onPress={() => router.push('/directory')}>
+            <TouchableOpacity style={styles.iconButton} onPress={() => router.push('/components/DirectorySection')}>
                 <Feather name="users" size={24} color="#ffffff" />
                 <Text style={styles.iconLabel}>Directory</Text>
             </TouchableOpacity>
