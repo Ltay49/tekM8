@@ -34,7 +34,7 @@ export default function Footer() {
                 <Text style={styles.iconLabel}>Reports</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.iconButton} onPress={() => router.push('/settings')}>
+            <TouchableOpacity style={styles.iconButton} onPress={() => router.push('/settingsScreen')}>
                 <Feather name="settings" size={24} color="#ffffff" />
                 <Text style={styles.iconLabel}>Settings</Text>
             </TouchableOpacity>

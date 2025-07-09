@@ -50,7 +50,7 @@ export default function ReviewCards() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Saved CSCS Cards</Text>
+      {/* <Text style={styles.title}>Saved CSCS Cards</Text> */}
 
       {cards.length === 0 ? (
         <Text style={styles.noCards}>No cards saved.</Text>

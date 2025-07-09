@@ -103,10 +103,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
-    borderRadius: 10,
+    backgroundColor: '#1F3B60',
+    borderRadius: 0,
   },
   title: {
+    color:'white',
     fontSize: 18,
     fontWeight: '700',
     marginBottom: 16,
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 10,
     backgroundColor: '#fff',
-    borderRadius: 8,
+    borderRadius: 5,
     marginBottom: 12,
     alignItems: 'center',
   

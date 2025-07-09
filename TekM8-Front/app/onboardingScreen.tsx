@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import HowToOnBoard from './components/HowToInduct';
 import UploadConstructionCard from './components/UploadConstructionCard';
 import ReviewCards from './components/ReviewCards';
+import DocumentPreviewWithCSCS from './components/DocumentPreviewWithCSCS';
 
 export default function OnboardingScreen() {
   const navigation = useNavigation();
@@ -26,9 +27,9 @@ export default function OnboardingScreen() {
       renderContent: () => <ReviewCards />,
     },
     {
-      title: 'Compose',
+      title: 'Export / Print',
       data: ['dummy4'],
-      renderContent: () => <Text style={styles.placeholder}>No content yet</Text>,
+      renderContent: () => <DocumentPreviewWithCSCS />,
     },
   ];
 
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     paddingTop:70,
     backgroundColor: '#0B1A2F', // Match full app dark background
   },
-  
+
   card: {
     backgroundColor: '#D84343',
     borderRadius:6,

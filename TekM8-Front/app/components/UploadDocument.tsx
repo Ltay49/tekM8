@@ -230,55 +230,152 @@ export default function UploadDocument() {
 }
 
 const styles = StyleSheet.create({
-    container:
-        { flex: 1, padding: 20, backgroundColor: '#fff' },
-    docItem:
-        { paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#ddd' },
-    docName:
-        { fontSize: 18, fontWeight: '600', marginBottom: 8, color: '#333' },
-    docButtonsRow:
-        { flexDirection: 'row', justifyContent: 'space-between' },
-    actionBtn:
-        { flex: 1, backgroundColor: '#007AFF', paddingVertical: 10, marginHorizontal: 4, borderRadius: 8, alignItems: 'center' },
-    actionBtnText:
-        { color: '#fff', fontWeight: '600' },
-    uploadButton:
-        { backgroundColor: '#007AFF', padding: 15, borderRadius: 10, marginBottom: 20 },
-    uploadButtonText:
-        { color: '#fff', textAlign: 'center', fontSize: 16 },
-    noDocsText:
-        { textAlign: 'center', color: '#999', fontSize: 16 },
-    list:
-        { marginTop: 10 },
-    namingModalBackground:
-        { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center' },
-    namingModalContainer:
-        { backgroundColor: '#fff', padding: 20, borderRadius: 12, width: '85%' },
-    namingModalTitle:
-        { fontSize: 18, fontWeight: 'bold', marginBottom: 15 },
-    namingOptionsRow:
-        { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 15 },
-    namingOptionButton:
-        { paddingVertical: 10, paddingHorizontal: 14, borderWidth: 1, borderColor: '#007AFF', borderRadius: 8 },
-    namingOptionSelected:
-        { backgroundColor: '#007AFF' },
-    namingOptionText:
-        { color: '#007AFF', fontWeight: '600' },
-    namingOptionTextSelected:
-        { color: '#fff' },
-    namingButton:
-        { paddingVertical: 12, borderRadius: 8 },
-    confirmButtonDisabledTrue:
-        { backgroundColor: '#ccc' },
-    confirmButtonDisabledFalse:
-        { backgroundColor: '#007AFF' },
-    namingButtonText:
-        { color: '#fff', fontWeight: 'bold', textAlign: 'center' },
-    confirmCloseContainer:
-        { padding: 15, backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#ccc', alignItems: 'center' },
-    confirmCloseButton:
-        { backgroundColor: '#FF3B30', paddingVertical: 12, paddingHorizontal: 30, borderRadius: 8 },
-    confirmCloseButtonText:
-        { color: '#fff', fontWeight: 'bold', fontSize: 16 },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#1F3B60',
+  },
+  uploadButton: {
+    backgroundColor: '#1C1C1E',
+    padding: 15,
+    borderRadius: 5,
+    margin: 20,
+    // shadowColor: '#000',
+    // shadowOpacity: 0.6,
+    // shadowRadius: 6,
+    // shadowOffset: { width: 0, height: 4 },
+    elevation: 10,
+  },
+  uploadButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#00B0FF',
+    textAlign:'center',
+    textTransform: 'uppercase',
+  },
+  list: {
+    marginTop: 10,
+  },
+  docItem: {
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 5,
+    marginBottom: 16,
+    // shadowColor: '#000',
+    // shadowOpacity: 0.5,
+    // shadowRadius: 5,
+    // shadowOffset: { width: 0, height: 3 },
+    // elevation: 6,
+  },
+  docName: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1C1C1E',
+    marginBottom: 10,
+    textTransform: 'uppercase',
+  },
+  docButtonsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  actionBtn: {
+    flex: 1,
+    backgroundColor: '#1C1C1E',
+    paddingVertical: 10,
+    marginHorizontal: 4,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  actionBtnText: {
+    color: 'white',
+    fontWeight: '700',
+    textTransform: 'uppercase',
+  },
+  noDocsText: {
+    textAlign: 'center',
+    color: '#ccc',
+    fontSize: 16,
+    fontStyle: 'italic',
+  },
+  namingModalBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  namingModalContainer: {
+    backgroundColor: '#1C2A3D',
+    padding: 20,
+    borderRadius: 12,
+    width: '85%',
+  },
+  namingModalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    color: '#fff',
+    textTransform: 'uppercase',
+    textAlign: 'center',
+  },
+  namingOptionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 15,
+  },
+  namingOptionButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderWidth: 1,
+    borderColor: '#fff',
+    borderRadius: 8,
+  },
+  namingOptionSelected: {
+    backgroundColor: '#D84343',
+  },
+  namingOptionText: {
+    color: '#fff',
+    fontWeight: '600',
+    textTransform: 'uppercase',
+  },
+  namingOptionTextSelected: {
+    color: 'black',
+    fontWeight: '700',
+  },
+  namingButton: {
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  confirmButtonDisabledTrue: {
+    backgroundColor: '#666',
+  },
+  confirmButtonDisabledFalse: {
+    backgroundColor: '#D84343',
+  },
+  namingButtonText: {
+    color: 'black',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    textTransform: 'uppercase',
+  },
+  confirmCloseContainer: {
+    padding: 15,
+    backgroundColor: '#0B1A2F',
+    borderTopWidth: 1,
+    borderColor: '#444',
+    alignItems: 'center',
+  },
+  confirmCloseButton: {
+    backgroundColor: '#D84343',
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+  },
+  confirmCloseButtonText: {
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: 16,
+    textTransform: 'uppercase',
+  },
 });
+
 

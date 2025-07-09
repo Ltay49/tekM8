@@ -1,8 +1,7 @@
 import React from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useLayoutEffect, useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 import UploadDocument from '../components/UploadDocument';
 import CurrentDocs from '../components/CurrentDocs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -35,53 +34,55 @@ export default function DocumentControlScreen() {
       renderItem={() => null}
       ListHeaderComponent={
         <>
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Steps</Text>
+          {/* <View style={styles.card}>
+            <Text style={styles.title}>Steps</Text>
             <HowToUpload />
-          </View>
+          </View> */}
 
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Upload a Document</Text>
+          <View style={styles.card}>
+            <Text style={styles.title}>Upload a Document</Text>
             <UploadDocument />
           </View>
         </>
       }
       ListFooterComponent={
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Your Documents</Text>
+        <View style={styles.card}>
+          <Text style={styles.title}>Your Documents</Text>
           <CurrentDocs />
         </View>
       }
-      contentContainerStyle={styles.scrollContainer}
+      contentContainerStyle={styles.container}
       showsVerticalScrollIndicator={false}
     />
   );
 }
 
 const styles = StyleSheet.create({
-  scrollContainer: {
+  container: {
     flexGrow: 1,
-    backgroundColor: '#f9fafb',
-    paddingVertical: 24,
-    paddingHorizontal: 16,
+    padding: 20,
+    paddingTop: 70,
+    backgroundColor: '#0B1A2F', // Dark background
   },
-  sectionContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 14,
-    padding: 16,
-    marginBottom: 24,
-    // subtle shadow for iOS
+  card: {
+    backgroundColor: '#D84343',
+    borderRadius:6,
+    paddingTop: 10,
+    borderWidth: 1,
+    // borderColor: '#ffffff33',
     shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 3 },
-    // shadow for Android
-    elevation: 4,
+    shadowOpacity: 0.6,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 10,
+    marginBottom:40
   },
-  sectionTitle: {
-    fontSize: 22,
-    fontFamily: 'Montserrat_700Bold',
-    color: '#0072CE',
+  title: {
+    padding: 10,
+    fontSize: 20,
+    fontWeight: '700',
+    color: 'black',
     marginBottom: 12,
+    textTransform: 'uppercase',
   },
 });
