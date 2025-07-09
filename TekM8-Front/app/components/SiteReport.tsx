@@ -4,12 +4,12 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Image,
   StyleSheet,
   ScrollView,
+  Modal,
 } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
 import uuid from 'react-native-uuid';
+import { useRouter } from 'expo-router';
 
 const generateReportTitle = (index: number) => {
   const now = new Date();
@@ -19,125 +19,81 @@ const generateReportTitle = (index: number) => {
 
 const SiteReport = () => {
   const [reports, setReports] = useState<any[]>([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [newReportName, setNewReportName] = useState('');
+  const router = useRouter();
 
-  const createNewReport = () => {
+  const handleCreateReport = () => {
+    const title = newReportName.trim() || generateReportTitle(reports.length + 1);
     const newReport = {
       id: uuid.v4() as string,
-      title: generateReportTitle(reports.length + 1),
+      title,
       items: [],
     };
     setReports([newReport, ...reports]);
+    setNewReportName('');
+    setModalVisible(false);
+    router.push(`/components/report/${newReport.id}`);
   };
 
-  const addItemToReport = (reportId: string) => {
-    const updatedReports = reports.map((report) => {
-      if (report.id === reportId) {
-        return {
-          ...report,
-          items: [
-            ...report.items,
-            {
-              id: uuid.v4() as string,
-              photo: null,
-              notes: '',
-            },
-          ],
-        };
-      }
-      return report;
-    });
-    setReports(updatedReports);
-  };
-
-  const handleTakePhoto = async (reportId: string, itemId: string) => {
-    const result = await ImagePicker.launchCameraAsync({
-      base64: false,
-      quality: 0.5,
-    });
-
-    if (!result.canceled && result.assets && result.assets.length > 0) {
-      const photoUri = result.assets[0].uri;
-
-      const updatedReports = reports.map((report) => {
-        if (report.id === reportId) {
-          return {
-            ...report,
-            items: report.items.map((item: any) =>
-              item.id === itemId ? { ...item, photo: photoUri } : item
-            ),
-          };
-        }
-        return report;
-      });
-
-      setReports(updatedReports);
-    }
-  };
-
-  const updateNotes = (reportId: string, itemId: string, text: string) => {
-    const updatedReports = reports.map((report) => {
-      if (report.id === reportId) {
-        return {
-          ...report,
-          items: report.items.map((item: any) =>
-            item.id === itemId ? { ...item, notes: text } : item
-          ),
-        };
-      }
-      return report;
-    });
-    setReports(updatedReports);
+  const openReport = (reportId: string) => {
+    router.push(`/components/report/${reportId}`);
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <TouchableOpacity style={styles.newReportButton} onPress={createNewReport}>
+      <TouchableOpacity
+        style={styles.newReportButton}
+        onPress={() => setModalVisible(true)}
+      >
         <Text style={styles.newReportText}>＋ Create New Report</Text>
       </TouchableOpacity>
 
       {reports.map((report) => (
         <View key={report.id} style={styles.reportCard}>
-          <Text style={styles.reportTitle}>{report.title}</Text>
-
-          <TouchableOpacity style={styles.addItemButton} onPress={() => addItemToReport(report.id)}>
-            <Text style={styles.addItemText}>＋ Add Item</Text>
+          <TouchableOpacity onPress={() => openReport(report.id)}>
+            <Text style={styles.reportTitle}>{report.title}</Text>
           </TouchableOpacity>
-
-          {report.items.map((item: any) => (
-            <View key={item.id} style={styles.itemBox}>
-              <TouchableOpacity onPress={() => handleTakePhoto(report.id, item.id)}>
-                <Text style={styles.cameraIcon}>📷</Text>
-              </TouchableOpacity>
-
-              {item.photo && (
-                <Image source={{ uri: item.photo }} style={styles.imagePreview} />
-              )}
-
-              <TextInput
-                style={styles.notesInput}
-                multiline
-                placeholder="Write notes here..."
-                value={item.notes}
-                onChangeText={(text) => updateNotes(report.id, item.id, text)}
-              />
-            </View>
-          ))}
         </View>
       ))}
+
+      {/* Naming Modal */}
+      <Modal visible={modalVisible} transparent animationType="fade">
+        <View style={styles.modalBackground}>
+          <View style={styles.modalBox}>
+            <Text style={styles.modalTitle}>Enter report name</Text>
+            <TextInput
+              style={styles.modalInput}
+              placeholder="e.g. Monday Morning Handover"
+              placeholderTextColor="#999"
+              value={newReportName}
+              onChangeText={setNewReportName}
+            />
+            <View style={styles.modalButtons}>
+              <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalCancel}>
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleCreateReport} style={styles.modalConfirm}>
+                <Text style={styles.modalButtonText}>Create</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    padding: 20,
     paddingTop: 100,
-    paddingBottom: 100,
     backgroundColor: '#0B1A2F',
   },
   newReportButton: {
     backgroundColor: '#007AFF',
-    paddingVertical: 14,
-    borderRadius: 10,
+    padding: 10,
+    borderRadius: 5,
     marginBottom: 20,
     alignItems: 'center',
   },
@@ -157,53 +113,60 @@ const styles = StyleSheet.create({
   reportTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 10,
     color: '#ffffff',
+    textAlign: 'center',
   },
-  addItemButton: {
-    backgroundColor: '#1C2C44',
-    paddingVertical: 10,
-    borderRadius: 8,
+  modalBackground: {
+    flex: 1,
+    backgroundColor: '#000000aa',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 12,
   },
-  addItemText: {
-    color: '#66B2FF',
-    fontWeight: '500',
-  },
-  itemBox: {
-    borderColor: '#334A68',
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 16,
-    backgroundColor: '#132235',
-  },
-  cameraIcon: {
-    fontSize: 32,
-    marginBottom: 10,
-    alignSelf: 'center',
-    color: '#ffffff',
-  },
-  imagePreview: {
-    width: '100%',
-    height: 180,
-    marginBottom: 10,
-    borderRadius: 8,
+  modalBox: {
+    backgroundColor: '#16263D',
+    padding: 20,
+    borderRadius: 12,
+    width: '85%',
     borderWidth: 1,
     borderColor: '#1E3A5F',
   },
-  notesInput: {
-    minHeight: 80,
-    borderColor: '#2C3E50',
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 8,
-    textAlignVertical: 'top',
+  modalTitle: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  modalInput: {
     backgroundColor: '#0F1A2F',
     color: '#ffffff',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#2C3E50',
+    padding: 10,
+    marginBottom: 16,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  modalCancel: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#333',
+    borderRadius: 8,
+  },
+  modalConfirm: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#007AFF',
+    borderRadius: 8,
+  },
+  modalButtonText: {
+    color: '#fff',
+    fontWeight: '600',
   },
 });
 
-
 export default SiteReport;
+

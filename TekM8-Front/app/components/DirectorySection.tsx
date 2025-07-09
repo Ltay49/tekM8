@@ -93,14 +93,10 @@ export default function DirectorySection() {
 const styles = StyleSheet.create({
   sectionHow: {
     backgroundColor: '#fff',
-    borderRadius: 14,
+    // borderRadius: 14,
     marginBottom: 24,
-    // padding: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 5,
+    padding: 10,
+    height:'100%'
   },
   sectionTitle: {
     fontSize: 18,
@@ -109,6 +105,7 @@ const styles = StyleSheet.create({
     color: '#1F2937',
   },
   searchInput: {
+    marginTop:50,
     backgroundColor: '#F9FAFB',
     padding: 10,
     borderRadius: 10,
