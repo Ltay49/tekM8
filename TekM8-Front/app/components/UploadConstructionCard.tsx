@@ -45,30 +45,58 @@ export default function UploadCSCSCards() {
   const scanSide = async (index: number, side: 'front' | 'back') => {
     const granted = await requestPermissions();
     if (!granted) return Alert.alert('Permission required');
-
-    const result = await ImagePicker.launchCameraAsync({ quality: 0.8 });
-    if (!result.canceled && result.assets.length > 0) {
-      const uri = result.assets[0].uri;
-
-      setCards(prev => {
-        const updated = [...prev];
-        updated[index][side] = uri;
-
-        const card = updated[index];
-        if (card.front && card.back) {
-          extractCardDetails(card.front, card.back, index);
-        }
-
-        const isLast = index === updated.length - 1;
-        if (card.front && card.back && isLast) {
-          updated.push({ front: null, back: null });
-        }
-
-        return updated;
-      });
-    }
+  
+    Alert.alert(
+      `Add ${side} of card`,
+      'Choose how to upload the image:',
+      [
+        {
+          text: 'Camera',
+          onPress: async () => {
+            const result = await ImagePicker.launchCameraAsync({ quality: 0.8 });
+            if (!result.canceled && result.assets.length > 0) {
+              handleImageResult(result.assets[0].uri, index, side);
+            }
+          },
+        },
+        {
+          text: 'Upload from Gallery',
+          onPress: async () => {
+            const result = await ImagePicker.launchImageLibraryAsync({
+              mediaTypes: ['images'],
+              quality: 0.8,
+            });
+            if (!result.canceled && result.assets.length > 0) {
+              handleImageResult(result.assets[0].uri, index, side);
+            }
+          },
+        },
+        { text: 'Cancel', style: 'cancel' },
+      ],
+      { cancelable: true }
+    );
   };
+  
 
+  const handleImageResult = (uri: string, index: number, side: 'front' | 'back') => {
+    setCards(prev => {
+      const updated = [...prev];
+      updated[index][side] = uri;
+  
+      const card = updated[index];
+      if (card.front && card.back) {
+        extractCardDetails(card.front, card.back, index);
+      }
+  
+      const isLast = index === updated.length - 1;
+      if (card.front && card.back && isLast) {
+        updated.push({ front: null, back: null });
+      }
+  
+      return updated;
+    });
+  };
+  
   const extractCardDetails = async (frontUri: string, backUri: string, index: number) => {
     try {
       setIsLoading(true);
@@ -182,7 +210,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1F3B60',
     flex: 1,
     padding: 20,
-    borderRadius:5
+    borderRadius:0
   },
   title: {
     fontSize: 22,

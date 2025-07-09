@@ -30,10 +30,13 @@ export const handleVisionExtract = async (
 };
 
 export const extractCardData = async (req: Request, res: Response): Promise<any> => {
+  console.log('🛠️ [extractCardData] Controller triggered with files:', Object.keys(req.files || {}));
+
   try {
     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
     if (!files?.frontImage?.[0]?.path || !files?.backImage?.[0]?.path) {
+      console.warn('⚠️ Missing frontImage or backImage in request');
       return res.status(400).json({ error: 'Both frontImage and backImage are required' });
     }
 
@@ -46,24 +49,53 @@ export const extractCardData = async (req: Request, res: Response): Promise<any>
     const frontText = frontResult.textAnnotations?.[0]?.description || '';
     const backText = backResult.textAnnotations?.[0]?.description || '';
 
-    // 🔍 Extract name by checking uppercase line BEFORE "CONSTRUCTION" or "CSCS"
-    const nameMatch = frontText.match(/(?:\n|^)([A-Z]+\s[A-Z]+)\s*\nREG\.?\s*NO/i);
+// Extract all lines for line-based scanning
+const lines = frontText.split('\n').map(line => line.trim());
+
+// Index of the line with REG NO
+const regLineIndex = lines.findIndex(line => /REG\.?\s*NO/i.test(line));
+
+let name = null;
+
+if (regLineIndex > 0) {
+  // Look 1–3 lines above REG NO
+  for (let i = regLineIndex - 1; i >= 0 && i >= regLineIndex - 3; i--) {
+    const candidate = lines[i];
+    if (
+      /^[A-Z\s]+$/.test(candidate) && // all uppercase
+      !candidate.includes('CSCS') &&
+      !candidate.includes('CONSTRUCTION') &&
+      !candidate.includes('SKILLS') &&
+      !candidate.includes('SCHEME') &&
+      !candidate.includes('WORKER') &&
+      candidate.length >= 5 // avoid short noise
+    ) {
+      name = candidate.trim();
+      break;
+    }
+  }
+}
     const regMatch = frontText.match(/\b\d{6,10}\b/);
     const expiryMatch = frontText.match(/EXPIRES(?: END)?[:\s]*([A-Za-z]+\s\d{4})/i);
     const qualificationMatch = backText.match(/BTEC.*|NVQ.*|Level\s\d.*|Diploma.*|Degree.*/i);
 
-    res.json({
+    const result = {
       front: {
         rawText: frontText,
-        name: nameMatch || null,
+        name: name || null,
         registrationNumber: regMatch?.[0] || null,
         expiryDate: expiryMatch?.[1] || null,
+        dummy: 'dummy field test'
       },
       back: {
         rawText: backText,
         qualification: qualificationMatch?.[0] || null,
       },
-    });
+    };
+
+    console.log('🧠 Extracted CSCS Card Details:', JSON.stringify(result, null, 2));
+
+    res.json(result);
   } catch (err) {
     console.error('❌ Vision extract error:', err);
     res.status(500).json({ error: 'Failed to extract text from images' });

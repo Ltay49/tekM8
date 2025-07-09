@@ -4,6 +4,8 @@ import path from 'path'; // ✅ make sure this is imported
 import visionRoutes from './routes/vision.routes';
 import formRoutes from './routes/form.routes';
 const mockCITB = require('./citb-cscs-response');
+const fixersRoutes = require('./routes/extractHandovers');
+
 import * as dotenv from 'dotenv';
 dotenv.config(); // ⬅️ must come before any Vision client init
 
@@ -16,7 +18,9 @@ app.use(cors());
 app.get('/citb/verify', (req, res) => {
     res.json(mockCITB);
   });
-  
+
+app.use('/api', fixersRoutes);
+
 
 // ✅ Add this line to serve the "uploads" folder as a static path
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
