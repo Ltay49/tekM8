@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import uuid from 'react-native-uuid';
 import { useRouter } from 'expo-router';
+import NoteTaker from './NoteTaker';
 
 const generateReportTitle = (index: number) => {
   const now = new Date();
@@ -21,6 +22,7 @@ const SiteReport = () => {
   const [reports, setReports] = useState<any[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [newReportName, setNewReportName] = useState('');
+  const [selectedTag, setSelectedTag] = useState('');
   const router = useRouter();
 
   const handleCreateReport = () => {
@@ -28,18 +30,36 @@ const SiteReport = () => {
     const newReport = {
       id: uuid.v4() as string,
       title,
+      tag: selectedTag,
       items: [],
     };
     setReports([newReport, ...reports]);
     setNewReportName('');
+    setSelectedTag('');
     setModalVisible(false);
-    router.push(`/components/report/${newReport.id}`);
+  
+    // ✅ Pass tag and id as query params to the report screen
+    router.push({
+      pathname: '/components/report/[id]',
+      params: {
+        id: newReport.id,
+        tag: newReport.tag,
+      },
+    });
   };
+  
 
-  const openReport = (reportId: string) => {
-    router.push(`/components/report/${reportId}`);
+  const openReport = (report: { id: string; tag: string }) => {
+    router.push({
+      pathname: '/components/report/[id]',
+      params: {
+        id: report.id,
+        tag: report.tag,
+      },
+    });
   };
-
+  
+  
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <TouchableOpacity
@@ -48,11 +68,14 @@ const SiteReport = () => {
       >
         <Text style={styles.newReportText}>＋ Create New Report</Text>
       </TouchableOpacity>
-
+    <NoteTaker />
       {reports.map((report) => (
         <View key={report.id} style={styles.reportCard}>
-          <TouchableOpacity onPress={() => openReport(report.id)}>
-            <Text style={styles.reportTitle}>{report.title}</Text>
+        <TouchableOpacity onPress={() => openReport(report)}>
+            <Text style={styles.reportTitle}>
+              {report.title}
+              {report.tag ? ` (${report.tag})` : ''}
+            </Text>
           </TouchableOpacity>
         </View>
       ))}
@@ -69,6 +92,30 @@ const SiteReport = () => {
               value={newReportName}
               onChangeText={setNewReportName}
             />
+
+            <Text style={styles.modalSubtitle}>Select a tag</Text>
+            <View style={styles.tagContainer}>
+              {['Labour Report', 'Progress Report', 'Safety Report'].map((tag) => (
+                <TouchableOpacity
+                  key={tag}
+                  style={[
+                    styles.tagButton,
+                    selectedTag === tag && styles.tagButtonSelected,
+                  ]}
+                  onPress={() => setSelectedTag(tag)}
+                >
+                  <Text
+                    style={[
+                      styles.tagText,
+                      selectedTag === tag && styles.tagTextSelected,
+                    ]}
+                  >
+                    {tag}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
             <View style={styles.modalButtons}>
               <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalCancel}>
                 <Text style={styles.modalButtonText}>Cancel</Text>
@@ -137,6 +184,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
   },
+  modalSubtitle: {
+    color: '#aaa',
+    fontSize: 14,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
   modalInput: {
     backgroundColor: '#0F1A2F',
     color: '#ffffff',
@@ -144,7 +197,31 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#2C3E50',
     padding: 10,
+    marginBottom: 12,
+  },
+  tagContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
     marginBottom: 16,
+    gap: 10,
+  },
+  tagButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    backgroundColor: '#2C3E50',
+    borderRadius: 20,
+  },
+  tagButtonSelected: {
+    backgroundColor: '#007AFF',
+  },
+  tagText: {
+    color: '#ccc',
+    fontSize: 14,
+  },
+  tagTextSelected: {
+    color: '#fff',
+    fontWeight: '600',
   },
   modalButtons: {
     flexDirection: 'row',
@@ -169,4 +246,3 @@ const styles = StyleSheet.create({
 });
 
 export default SiteReport;
-

@@ -56,14 +56,19 @@ export default function ReviewCards() {
         <Text style={styles.noCards}>No cards saved.</Text>
       ) : (
         cards.map((card, idx) => (
-          <TouchableOpacity
+            <TouchableOpacity
             key={idx}
             onPress={() => setSelectedCard(card.result!)}
+            style={styles.cardRow}
           >
-            <Text style={styles.underlinedText}>
-              {card.result?.front.name || `Card ${idx + 1}`}
-            </Text>
+            <View style={styles.cardContent}>
+              <Text style={styles.underlinedText}>
+                {card.result?.front.name || `Card ${idx + 1}`}
+              </Text>
+              <Text>✅</Text>
+            </View>
           </TouchableOpacity>
+          
         ))
       )}
 
@@ -76,6 +81,7 @@ export default function ReviewCards() {
 
               <Text style={styles.label}>👤 Name:</Text>
               <Text style={styles.value}>{selectedCard?.front.name}</Text>
+            
 
               <Text style={styles.label}>🔢 Registration #:</Text>
               <Text style={styles.value}>{selectedCard?.front.registrationNumber}</Text>
@@ -120,7 +126,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'white',
     textDecorationLine: 'underline',
-    marginBottom: 15,
+    marginBottom: 0,
     fontWeight: '500',
   },
   modalOverlay: {
@@ -168,4 +174,14 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 16,
   },
+  cardRow: {
+    marginBottom: 15,
+  },
+  
+  cardContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  
 });

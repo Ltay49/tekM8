@@ -9,39 +9,100 @@ import {
 } from 'react-native';
 
 const directoryData = [
-  { id: 1, name: 'Alice Smith', qualification: 'Supervisor' },
-  { id: 2, name: 'Ben Jones', qualification: 'Electrician' },
-  { id: 3, name: 'Carla White', qualification: 'Labourer' },
-  { id: 4, name: 'Dylan Ray', qualification: 'Supervisor' },
-  { id: 5, name: 'Emma Stone', qualification: 'Electrician' },
+  {
+    id: 1,
+    name: 'Alice Smith',
+    qualification: 'Supervisor',
+    type: 'Supervisor',
+    gang: 'LT-Fittings',
+    cards: ['CSCS', 'IPAF'],
+    inductionDate: '2024-04-10',
+  },
+  {
+    id: 2,
+    name: 'Ben Jones',
+    qualification: 'Electrician',
+    type: 'Electrician',
+    gang: 'PowerTech',
+    cards: ['PASMA'],
+    inductionDate: '2024-03-15',
+  },
+  {
+    id: 3,
+    name: 'Carla White',
+    qualification: 'Labourer',
+    type: 'Labourer',
+    gang: 'SiteWorks',
+    cards: ['CSCS'],
+    inductionDate: '2024-05-01',
+  },
 ];
 
-const qualificationOptions = ['All', 'Supervisor', 'Electrician', 'Labourer'];
+const filterOptions = [
+  'All',
+  'Type ---',
+  'Supervisor',
+  'Electrician',
+  'Labourer',
+  'Card ---',
+  'CSCS',
+  'IPAF',
+  'PASMA',
+  'Gang ---',
+  'LT-Fittings',
+  'PowerTech',
+  'SiteWorks',
+];
 
 export default function DirectorySection() {
   const [searchText, setSearchText] = useState('');
-  const [qualificationFilter, setQualificationFilter] = useState('All');
+  const [filter, setFilter] = useState('All');
   const [showOptions, setShowOptions] = useState(false);
+  const [sortByDate, setSortByDate] = useState(false);
+  const [expandedIds, setExpandedIds] = useState<number[]>([]);
 
-  const filteredDirectory = directoryData.filter(
-    (person) =>
-      person.name.toLowerCase().includes(searchText.toLowerCase()) &&
-      (qualificationFilter === 'All' || person.qualification === qualificationFilter)
-  );
+  const toggleExpand = (id: number) => {
+    setExpandedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
 
-  const groupedDirectory = Object.values(
+  const filteredDirectory = directoryData
+    .filter((person) => {
+      const matchSearch = person.name
+        .toLowerCase()
+        .includes(searchText.toLowerCase());
+
+      if (filter === 'All' || filter.endsWith('---')) return matchSearch;
+
+      return (
+        matchSearch &&
+        (person.type === filter ||
+          person.gang === filter ||
+          person.cards.includes(filter))
+      );
+    })
+    .sort((a, b) => {
+      if (!sortByDate) return 0;
+      return new Date(b.inductionDate).getTime() - new Date(a.inductionDate).getTime();
+    });
+
+  type Section = {
+    title: string;
+    data: typeof directoryData;
+  };
+
+  const groupedDirectory: Section[] = Object.values(
     filteredDirectory.reduce((acc, person) => {
       const firstLetter = person.name[0].toUpperCase();
       if (!acc[firstLetter]) acc[firstLetter] = { title: firstLetter, data: [] };
       acc[firstLetter].data.push(person);
       return acc;
-    }, {} as Record<string, { title: string; data: typeof directoryData }>)
+    }, {} as Record<string, Section>)
   ).sort((a, b) => a.title.localeCompare(b.title));
 
   return (
     <View style={styles.sectionHow}>
-      {/* <Text style={styles.sectionTitle}>Operative list</Text> */}
-
       <TextInput
         style={styles.searchInput}
         placeholder="Search by name"
@@ -53,16 +114,16 @@ export default function DirectorySection() {
         style={styles.dropdownButton}
         onPress={() => setShowOptions(!showOptions)}
       >
-        <Text style={styles.dropdownText}>{qualificationFilter}</Text>
+        <Text style={styles.dropdownText}>{filter}</Text>
       </TouchableOpacity>
 
       {showOptions && (
         <View style={styles.dropdownList}>
-          {qualificationOptions.map((option) => (
+          {filterOptions.map((option) => (
             <TouchableOpacity
               key={option}
               onPress={() => {
-                setQualificationFilter(option);
+                setFilter(option);
                 setShowOptions(false);
               }}
               style={styles.dropdownItem}
@@ -73,14 +134,43 @@ export default function DirectorySection() {
         </View>
       )}
 
+      <TouchableOpacity
+        style={styles.sortButton}
+        onPress={() => setSortByDate((prev) => !prev)}
+      >
+        <Text style={styles.dropdownText}>
+          {sortByDate ? 'Sorted by Induction Date' : 'Sort by Induction Date'}
+        </Text>
+      </TouchableOpacity>
+
       <SectionList
         sections={groupedDirectory}
         keyExtractor={(item) => item.id.toString()}
-        stickySectionHeadersEnabled
         renderItem={({ item }) => (
-          <Text style={styles.directoryItem}>
-            {item.name} — {item.qualification}
-          </Text>
+          <View>
+            <TouchableOpacity
+              onPress={() => toggleExpand(item.id)}
+              style={styles.nameRow}
+            >
+              <Text style={styles.nameOnly}>{item.name}</Text>
+              <View style={styles.iconRow}>
+                <TouchableOpacity onPress={() => console.log('Edit', item.id)}>
+                  <Text style={styles.icon}>✏️</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => console.log('Delete', item.id)}>
+                  <Text style={styles.icon}>🗑️</Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+            {expandedIds.includes(item.id) && (
+              <View style={styles.detailsBox}>
+                <Text>Type: {item.type}</Text>
+                <Text>Gang: {item.gang}</Text>
+                <Text>Cards: {item.cards.join(', ')}</Text>
+                <Text>Induction Date: {item.inductionDate}</Text>
+              </View>
+            )}
+          </View>
         )}
         renderSectionHeader={({ section: { title } }) => (
           <Text style={styles.sectionHeader}>{title}</Text>
@@ -93,19 +183,11 @@ export default function DirectorySection() {
 const styles = StyleSheet.create({
   sectionHow: {
     backgroundColor: '#fff',
-    // borderRadius: 14,
-    marginBottom: 24,
     padding: 10,
-    height:'100%'
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 16,
-    color: '#1F2937',
+    height: '100%',
   },
   searchInput: {
-    marginTop:50,
+    marginTop: 50,
     backgroundColor: '#F9FAFB',
     padding: 10,
     borderRadius: 10,
@@ -141,13 +223,30 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#111827',
   },
-  directoryItem: {
-    fontSize: 15,
-    paddingVertical: 10,
+  sortButton: {
+    backgroundColor: '#F3F4F6',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
+  },
+  nameRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
     paddingHorizontal: 12,
     borderBottomColor: '#E5E7EB',
     borderBottomWidth: 1,
+  },
+  nameOnly: {
+    fontSize: 15,
     color: '#111827',
+  },
+  iconRow: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  icon: {
+    fontSize: 16,
   },
   sectionHeader: {
     paddingVertical: 8,
@@ -156,5 +255,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     backgroundColor: '#F3F4F6',
     color: '#4B5563',
+  },
+  detailsBox: {
+    paddingHorizontal: 20,
+    paddingBottom: 10,
+  },
+  detailText: {
+    fontSize: 14,
+    color: '#111827',
   },
 });

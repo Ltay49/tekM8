@@ -1,10 +1,14 @@
 import { Request, Response } from 'express';
 import { extractFromImageWithVision } from '../models/vision.model';
 import vision from '@google-cloud/vision';
+import fs from 'fs/promises';
+import OpenAI from 'openai';
+
 
 const client = new vision.ImageAnnotatorClient({
   keyFilename: './src/tekmate-vision-key.json',
 });
+
 
 export const handleVisionExtract = async (
   req: Request,
@@ -103,4 +107,93 @@ if (regLineIndex > 0) {
 };
 
 
+export const extractAndInstruct = async (req: Request, res: Response): Promise<any> => {
+  console.log('📸 [extractAndInstruct] Received request');
+  try {
+    if (!req.file) {
+      console.warn('⚠️ No image file received');
+      return res.status(400).json({ error: 'Image is required.' });
+    }
+
+    console.log('🖼️ Image path:', req.file.path);
+
+    const imagePath = req.file.path;
+
+    const [result] = await client.textDetection(imagePath);
+    const rawText = result.fullTextAnnotation?.text || '';
+
+    console.log('🧾 Extracted raw OCR text:', rawText.slice(0, 200), '...');
+
+    if (!rawText) {
+      await fs.unlink(imagePath);
+      return res.status(400).json({ error: 'No text found in image.' });
+    }
+
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
+
+    const prompt = `
+    You are an assistant interpreting raw OCR text from images of handwritten construction site meeting notes.
+    
+    Your job is to:
+    - Correct spelling and grammar
+    - Structure the notes in a clean, human-readable format
+    - Group related items logically (e.g., by floor level or task category)
+    - Display dates only from 2025 onwards (discard or infer others)
+    - Do not hallucinate information — just clean and clarify
+    - Assume rooms are numbered 1–12 per floor
+    - Maintain bullet points and section headings for clarity
+    - If dates or names are unclear, mark them as [uncertain]
+    
+    Use the following format:
+    
+    ---
+    
+    ## Weekly Progress Meeting
+    
+    **Date:** [Insert or infer date from context]  
+    **Attended by:**  
+    - Name  
+    ...
+    ---
+    
+    ### Level 01 – Handover Schedule
+    - Rooms X–Y: DD/MM/YY  
+  
+    ...
+    
+    ### Level 02 – Handover Schedule
+    ...
+    
+    ---
+    
+    ### Tasks / Actions
+    - Task 1  
+    - Task 2  
+    
+    ---
+    
+    Here is the raw OCR text to interpret:
+    \n\n${rawText}
+    `;
+    
+    
+
+    const gptRes = await openai.chat.completions.create({
+      model: 'gpt-4o',
+      messages: [
+        { role: 'system', content: 'You are a helpful assistant for construction site documentation.' },
+        { role: 'user', content: prompt },
+      ],
+    });
+
+    const gptOutput = gptRes.choices[0]?.message?.content;
+    console.log('🧠 GPT-4 Summary:', gptOutput?.slice(0, 200), '...');
+
+    res.json({ rawText, gptSummary: gptOutput });
+    await fs.unlink(imagePath);
+  } catch (error) {
+    console.error('❌ Error in extractAndInstruct:', error);
+    res.status(500).json({ error: 'Failed to process image.' });
+  }
+};
 

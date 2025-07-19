@@ -5,7 +5,8 @@ import {
   Montserrat_700Bold,
 } from '@expo-google-fonts/montserrat';
 import { Text, View, StyleSheet } from 'react-native';
-import Footer from './Footer'; // make sure this path is correct
+import { Provider as PaperProvider } from 'react-native-paper';
+import Footer from './Footer'; // ensure this path is correct
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -22,12 +23,14 @@ export default function RootLayout() {
   }
 
   return (
-    <View style={styles.root}>
-      <View style={styles.content}>
-        <Slot />
+    <PaperProvider>
+      <View style={styles.root}>
+        <View style={styles.content}>
+          <Slot />
+        </View>
+        <Footer />
       </View>
-      <Footer />
-    </View>
+    </PaperProvider>
   );
 }
 

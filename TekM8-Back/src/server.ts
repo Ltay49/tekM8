@@ -3,6 +3,7 @@ import app from './app';
 
 const PORT = parseInt(process.env.PORT || '4000', 10);
 
+console.log('🧪 OPENAI_API_KEY starts with:', process.env.OPENAI_API_KEY?.slice(0, 8) || 'undefined');
 
 app.listen(PORT, '0.0.0.0', () => {
   const interfaces = os.networkInterfaces();

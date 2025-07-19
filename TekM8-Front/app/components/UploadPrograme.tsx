@@ -93,13 +93,19 @@ const UploadPrograme: React.FC = () => {
         >
             <ScrollView contentContainerStyle={styles.container}>
                 <Text style={styles.heading}>Press to upload your programme</Text>
-
                 <TextInput
-                    placeholder="Enter programme name"
+                    placeholder="Enter programme name e.g Rev1"
                     placeholderTextColor="#ccc"
                     style={styles.input}
                     value={programmeName}
                     onChangeText={setProgrammeName}
+                />
+                 <TextInput
+                    placeholder="Enter search term e.g. Fixers "
+                    placeholderTextColor="#ccc"
+                    style={styles.input}
+                    // value={programmeName}
+                    // onChangeText={setProgrammeName}
                 />
 
                 {!imageUri && (
