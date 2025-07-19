@@ -1,0 +1,3 @@
+TekM8-Back/.env
+TekM8-Back/src/openAI_Key.txt
+TekM8-Back/src/tekmate-vision-key.json
