@@ -7,11 +7,9 @@ const keyPath = path.join(__dirname, '../tekmate-vision-key.json');
 console.log('🔍 Vision API key path:', keyPath);
 console.log('🔍 Key exists?', fs.existsSync(keyPath));
 
-const client = new vision.ImageAnnotatorClient({
-  keyFilename: keyPath,
-});
-
 export const extractFromImageWithVision = async (imagePath: string): Promise<any> => {
+  const client = new vision.ImageAnnotatorClient();
+
     if (!imagePath) {
       throw new Error('imagePath is required');
     }
@@ -75,6 +73,8 @@ export const extractFromImageWithVision = async (imagePath: string): Promise<any
   
 
   export async function extractCscsCardData(imagePath: string) {
+    const client = new vision.ImageAnnotatorClient();
+
     const [result] = await client.textDetection(imagePath);
     const text = result.fullTextAnnotation?.text || '';
   

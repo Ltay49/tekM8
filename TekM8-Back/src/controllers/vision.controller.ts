@@ -5,15 +5,12 @@ import fs from 'fs/promises';
 import OpenAI from 'openai';
 
 
-const client = new vision.ImageAnnotatorClient({
-  keyFilename: './src/tekmate-vision-key.json',
-});
-
-
 export const handleVisionExtract = async (
   req: Request,
   res: Response
 ): Promise<void> => {
+  const client = new vision.ImageAnnotatorClient();
+
   try {
     const rawImagePath = req.body?.imagePath;
 
@@ -34,6 +31,8 @@ export const handleVisionExtract = async (
 };
 
 export const extractCardData = async (req: Request, res: Response): Promise<any> => {
+  const client = new vision.ImageAnnotatorClient();
+
   console.log('🛠️ [extractCardData] Controller triggered with files:', Object.keys(req.files || {}));
 
   try {
@@ -108,6 +107,7 @@ if (regLineIndex > 0) {
 
 
 export const extractAndInstruct = async (req: Request, res: Response): Promise<any> => {
+  const client = new vision.ImageAnnotatorClient();
   console.log('📸 [extractAndInstruct] Received request');
   try {
     if (!req.file) {
