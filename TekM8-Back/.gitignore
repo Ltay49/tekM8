@@ -6,3 +6,5 @@ src/tekmate-vision-key.json
 
 # Ignore uploaded files
 uploads/
+
+src/openAI_Key.txt
