@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
+import { Link } from 'expo-router';
 
 import PieChartComponent from './PieChart';
 
@@ -19,6 +20,9 @@ export default function Dashboard() {
   const projectEndDate = '30 Aug 2025';
   const weeksRemaining = 7;
   const totalHandoversRemaining = 15;
+  const openSnags = 69;
+  const closedSnags = 124;
+  const compSnags = 30;
   const projectCode = 'PA-001';
   const postCode = 'M3 3LE'
 
@@ -31,9 +35,9 @@ export default function Dashboard() {
   ];
 
   const upcomingHandovers = [
-    { section: 'Block A - Roof', date: '8 Jul' },
-    { section: 'Block B - Plumbing', date: '10 Jul' },
-    { section: 'External Works', date: '12 Jul' },
+    { section: 'Block A - Level 10 - 2nd Fix', date: '8 Jul' },
+    { section: 'Block B - Level 06 - 2nd Fix', date: '10 Jul' },
+    { section: 'External Works', date: '18 Jul' },
     { section: 'Block C - Final Fix', date: '15 Jul' },
     { section: 'Snagging Zone 1', date: '18 Jul' },
   ];
@@ -55,7 +59,7 @@ export default function Dashboard() {
             <Text style={styles.projectCode}>{projectCode}</Text>
             <Text style={styles.projectCode}>{postCode}</Text>
           </View>
-          <TouchableOpacity style={styles.switchButton} onPress={() => {}}>
+          <TouchableOpacity style={styles.switchButton} onPress={() => { }}>
             <Text style={styles.switchText}>Switch Project</Text>
           </TouchableOpacity>
         </View>
@@ -66,24 +70,42 @@ export default function Dashboard() {
         {/* <View style={styles.gridItem}><Text style={styles.statLabel}>Project End</Text><Text style={styles.statValueSmallHighlight}>{projectEndDate}</Text></View> */}
         <View style={styles.gridItem}><Text style={styles.statLabel}>Weeks Left</Text><Text style={styles.statValueHighlight}>{weeksRemaining}</Text></View>
         <View style={styles.gridItem}><Text style={styles.statLabel}>Total Ops</Text><Text style={styles.statValueSmall}>{totalOps}</Text></View>
-        <View style={styles.gridItem}><Text style={styles.statLabel}>Hand - overs</Text><Text style={styles.statValueSmallHighlight}>{totalHandoversRemaining}</Text></View>
+        <View style={styles.gridItem}><Text style={styles.statLabel}>H/O(s)</Text><Text style={styles.statLabel}>TBC</Text><Text style={styles.statValueSmallHighlight}>{totalHandoversRemaining}</Text></View>
+        <View style={styles.gridItem}><Text style={styles.statLabel}>Snags - Open</Text><Text style={styles.statValueSmallHighlightOpen}>{openSnags}</Text></View>
+        <View style={styles.gridItem}><Text style={styles.statLabel}>Snags - closed</Text><Text style={styles.statValueSmallHighlightClosed}>{closedSnags}</Text></View>
+        <View style={styles.gridItem}><Text style={styles.statLabel}>Snags - comp</Text><Text style={styles.statValueSmallHighlightComp}>{compSnags}</Text></View>
       </View>
 
-    <PieChartComponent />
+      <PieChartComponent />
       {/* Upcoming Handovers */}
       <View style={styles.cardSection}>
         <View style={styles.inductionsHeader}>
-          <Text style={styles.statLabel}>Upcoming Handovers({upcomingHandovers.length})</Text>
+          <Text style={styles.statLabel}>Upcoming H/O(s) ({upcomingHandovers.length})</Text>
           <TouchableOpacity onPress={() => setShowAllHandovers(!showAllHandovers)}>
             <Text style={styles.link}>{showAllHandovers ? 'Show Less' : 'See All'}</Text>
           </TouchableOpacity>
         </View>
         {(showAllHandovers ? upcomingHandovers : upcomingHandovers.slice(0, 3)).map((item, index, arr) => (
           <View key={index}>
-            <View style={styles.inducteeRow}>
-              <Text style={styles.inducteeName}>{item.section}</Text>
-              <Text style={styles.inducteeDate}>{item.date}</Text>
-            </View>
+            <Link
+              href={{
+                pathname: '/components/handovers/[id]',
+                params: {
+                  id: index.toString(),
+                  section: item.section,
+                  date: item.date,
+                },
+              }}
+              asChild
+            >
+              <TouchableOpacity>
+                <View style={styles.inducteeRow}>
+                  <Text style={styles.inducteeName}>{item.section}</Text>
+                  <Text style={styles.inducteeDate}>{item.date}</Text>
+                </View>
+              </TouchableOpacity>
+            </Link>
+
             {index < arr.length - 1 && <View style={styles.divider} />}
           </View>
         ))}
@@ -153,7 +175,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   switchButton: {
-    marginTop:30,
+    marginTop: 30,
     backgroundColor: '#1C1C1E',
     paddingVertical: 8,
     paddingHorizontal: 16,
@@ -182,8 +204,12 @@ const styles = StyleSheet.create({
   gridContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginBottom: 20,
+    // justifyContent: 'space-evenly',
+    marginBottom: 10,
+    gap: 15,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'white'
   },
   gridItem: {
     width: '30%',
@@ -225,22 +251,40 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   statValueHighlight: {
-    textAlign:'center',
+    textAlign: 'center',
     fontSize: 32,
     fontWeight: '800',
     color: '#00E676',
   },
   statValueSmall: {
-    textAlign:'center',
+    textAlign: 'center',
     fontSize: 32,
     fontWeight: '700',
     color: '#FFFFFF',
   },
   statValueSmallHighlight: {
-    textAlign:'center',
+    textAlign: 'center',
     fontSize: 32,
     fontWeight: '700',
     color: '#FF9800',
+  },
+  statValueSmallHighlightOpen: {
+    textAlign: 'center',
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#FFB5A7',
+  },
+  statValueSmallHighlightClosed: {
+    textAlign: 'center',
+    fontSize: 32,
+    fontWeight: '700',
+    color: 'lightgreen',
+  },
+  statValueSmallHighlightComp: {
+    textAlign: 'center',
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#FFD6BA',
   },
   inductionsHeader: {
     flexDirection: 'row',
@@ -250,7 +294,7 @@ const styles = StyleSheet.create({
   },
   link: {
     color: '#00B0FF',
-    textDecorationLine:'underline',
+    textDecorationLine: 'underline',
     fontSize: 16,
     fontWeight: '600',
   },
