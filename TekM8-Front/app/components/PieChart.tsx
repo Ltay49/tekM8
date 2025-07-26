@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Dimensions, View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -13,36 +14,36 @@ interface ChartData {
 }
 
 const workforceData: ChartData[] = [
-    { name: 'Plasterer', population: 8, color: '#f39c12', legendFontColor: '#7F7F7F', legendFontSize: 15 },
-    { name: 'Fixer', population: 6, color: '#e74c3c', legendFontColor: '#7F7F7F', legendFontSize: 15 },
-    { name: 'Labourer', population: 18, color: '#2ecc71', legendFontColor: '#7F7F7F', legendFontSize: 15 },
-    { name: 'Management', population: 10, color: '#3498db', legendFontColor: '#7F7F7F', legendFontSize: 15 },
+    { name: 'Plasterer', population: 8, color: '#00E676', legendFontColor: '#90CAF9', legendFontSize: 13 },
+    { name: 'Fixer', population: 6, color: '#FF6B6B', legendFontColor: '#90CAF9', legendFontSize: 13 },
+    { name: 'Labourer', population: 18, color: '#4CAF50', legendFontColor: '#90CAF9', legendFontSize: 13 },
+    { name: 'Management', population: 10, color: '#90CAF9', legendFontColor: '#90CAF9', legendFontSize: 13 },
 ];
 
 const skillsData: ChartData[] = [
-    { name: 'IPAF', population: 12, color: '#9b59b6', legendFontColor: '#7F7F7F', legendFontSize: 15 },
-    { name: 'PASMA', population: 10, color: '#1abc9c', legendFontColor: '#7F7F7F', legendFontSize: 15 },
-    { name: 'First Aid', population: 8, color: '#e67e22', legendFontColor: '#7F7F7F', legendFontSize: 15 },
-    { name: 'SSSTS', population: 7, color: '#34495e', legendFontColor: '#7F7F7F', legendFontSize: 15 },
-    { name: 'SMSTS', population: 5, color: '#95a5a6', legendFontColor: '#7F7F7F', legendFontSize: 15 },
+    { name: 'IPAF', population: 12, color: '#FF9800', legendFontColor: '#90CAF9', legendFontSize: 13 },
+    { name: 'PASMA', population: 10, color: '#00B0FF', legendFontColor: '#90CAF9', legendFontSize: 13 },
+    { name: 'First Aid', population: 8, color: '#FFD700', legendFontColor: '#90CAF9', legendFontSize: 13 },
+    { name: 'SSSTS', population: 7, color: '#E91E63', legendFontColor: '#90CAF9', legendFontSize: 13 },
+    { name: 'SMSTS', population: 5, color: '#9C27B0', legendFontColor: '#90CAF9', legendFontSize: 13 },
 ];
 
 const areaData: ChartData[] = [
-    { name: 'GF', population: 10, color: '#FF6384', legendFontColor: '#7F7F7F', legendFontSize: 15 },
-    { name: 'Level 01', population: 9, color: '#36A2EB', legendFontColor: '#7F7F7F', legendFontSize: 15 },
-    { name: 'Level 02', population: 8, color: '#FFCE56', legendFontColor: '#7F7F7F', legendFontSize: 15 },
-    { name: 'Level 03', population: 5, color: '#4BC0C0', legendFontColor: '#7F7F7F', legendFontSize: 15 },
-    { name: 'Roof', population: 4, color: '#9966FF', legendFontColor: '#7F7F7F', legendFontSize: 15 },
-    { name: 'Site Wide', population: 6, color: '#C9CBCF', legendFontColor: '#7F7F7F', legendFontSize: 15 },
+    { name: 'GF', population: 10, color: '#FF6384', legendFontColor: '#90CAF9', legendFontSize: 13 },
+    { name: 'Level 01', population: 9, color: '#36A2EB', legendFontColor: '#90CAF9', legendFontSize: 13 },
+    { name: 'Level 02', population: 8, color: '#FFCE56', legendFontColor: '#90CAF9', legendFontSize: 13 },
+    { name: 'Level 03', population: 5, color: '#4BC0C0', legendFontColor: '#90CAF9', legendFontSize: 13 },
+    { name: 'Roof', population: 4, color: '#9966FF', legendFontColor: '#90CAF9', legendFontSize: 13 },
+    { name: 'Site Wide', population: 6, color: '#FF9F40', legendFontColor: '#90CAF9', legendFontSize: 13 },
 ];
 
 const taskData: ChartData[] = [
-    { name: '1st Fixing', population: 10, color: '#f1c40f', legendFontColor: '#7F7F7F', legendFontSize: 15 },
-    { name: '2nd Fixing', population: 9, color: '#2ecc71', legendFontColor: '#7F7F7F', legendFontSize: 15 },
-    { name: 'Plastering', population: 8, color: '#3498db', legendFontColor: '#7F7F7F', legendFontSize: 15 },
-    { name: 'Snagging', population: 5, color: '#9b59b6', legendFontColor: '#7F7F7F', legendFontSize: 15 },
-    { name: 'M&E Install', population: 6, color: '#34495e', legendFontColor: '#7F7F7F', legendFontSize: 15 },
-    { name: 'Decorating', population: 4, color: '#e67e22', legendFontColor: '#7F7F7F', legendFontSize: 15 },
+    { name: '1st Fixing', population: 10, color: '#FFD54F', legendFontColor: '#90CAF9', legendFontSize: 13 },
+    { name: '2nd Fixing', population: 9, color: '#81C784', legendFontColor: '#90CAF9', legendFontSize: 13 },
+    { name: 'Plastering', population: 8, color: '#64B5F6', legendFontColor: '#90CAF9', legendFontSize: 13 },
+    { name: 'Snagging', population: 5, color: '#BA68C8', legendFontColor: '#90CAF9', legendFontSize: 13 },
+    { name: 'M&E Install', population: 6, color: '#78909C', legendFontColor: '#90CAF9', legendFontSize: 13 },
+    { name: 'Decorating', population: 4, color: '#FFB74D', legendFontColor: '#90CAF9', legendFontSize: 13 },
 ];
 
 type ChartType = 'workforce' | 'skills' | 'area' | 'task';
@@ -206,20 +207,26 @@ const PieChartComponent: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      {/* Header with Icon */}
+      <View style={styles.headerWithIcon}>
+        <MaterialIcons name="pie-chart" size={24} color="#90CAF9" />
+        <Text style={styles.sectionTitle}>Analytics</Text>
+      </View>
+
       {/* Date Range Picker and Add Button Row */}
       <View style={styles.topButtonRow}>
         <TouchableOpacity
           style={styles.datePickerButton}
           onPress={() => setShowDatePicker(true)}
         >
-          <Text style={styles.datePickerText}>📅</Text>
+          <MaterialIcons name="calendar-today" size={20} color="#90CAF9" />
           <Text style={styles.datePickerLabel}>{getDisplayText()}</Text>
           {(startDate || endDate) && (
             <TouchableOpacity
               onPress={clearDates}
               style={styles.clearButton}
             >
-              <Text style={styles.clearButtonText}>✕</Text>
+              <MaterialIcons name="close" size={16} color="#90CAF9" />
             </TouchableOpacity>
           )}
         </TouchableOpacity>
@@ -228,7 +235,8 @@ const PieChartComponent: React.FC = () => {
           style={styles.addButton}
           onPress={() => setShowAddModal(true)}
         >
-          <Text style={styles.addButtonText}>+ Add</Text>
+          <MaterialIcons name="add" size={18} color="white" />
+          <Text style={styles.addButtonText}>Add</Text>
         </TouchableOpacity>
       </View>
 
@@ -248,21 +256,24 @@ const PieChartComponent: React.FC = () => {
       </View>
 
       {/* Chart Title */}
-      <Text style={styles.title}>{chartTitleMap[selectedChart]}</Text>
+      <Text style={styles.chartTitle}>{chartTitleMap[selectedChart]}</Text>
 
       {/* Pie Chart */}
-      <PieChart
-        data={chartMap[selectedChart]}
-        width={screenWidth}
-        height={220}
-        chartConfig={{
-          color: () => '#000',
-        }}
-        accessor="population"
-        backgroundColor="transparent"
-        paddingLeft="0"
-        absolute
-      />
+      <View style={styles.chartContainer}>
+        <PieChart
+          data={chartMap[selectedChart]}
+          width={screenWidth - 40}
+          height={220}
+          chartConfig={{
+            color: () => '#90CAF9',
+            backgroundColor: 'transparent',
+          }}
+          accessor="population"
+          backgroundColor="transparent"
+          paddingLeft="0"
+          absolute
+        />
+      </View>
 
       {/* Date Picker Modal */}
       <Modal
@@ -279,14 +290,14 @@ const PieChartComponent: React.FC = () => {
                 onPress={() => navigateMonth(-1)}
                 style={styles.navButton}
               >
-                <Text style={styles.navButtonText}>‹</Text>
+                <MaterialIcons name="chevron-left" size={24} color="#90CAF9" />
               </TouchableOpacity>
               <Text style={styles.monthTitle}>{monthYear}</Text>
               <TouchableOpacity
                 onPress={() => navigateMonth(1)}
                 style={styles.navButton}
               >
-                <Text style={styles.navButtonText}>›</Text>
+                <MaterialIcons name="chevron-right" size={24} color="#90CAF9" />
               </TouchableOpacity>
             </View>
 
@@ -355,7 +366,10 @@ const PieChartComponent: React.FC = () => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.addModalContent}>
-            <Text style={styles.addModalTitle}>Select Data to Display</Text>
+            <View style={styles.modalHeaderWithIcon}>
+              <MaterialIcons name="settings" size={24} color="#90CAF9" />
+              <Text style={styles.addModalTitle}>Select Data to Display</Text>
+            </View>
             <Text style={styles.addModalSubtitle}>Choose which charts you want to show</Text>
             
             <View style={styles.chartOptionsContainer}>
@@ -371,7 +385,7 @@ const PieChartComponent: React.FC = () => {
                       visibleCharts.includes(chartType) && styles.checkboxChecked
                     ]}>
                       {visibleCharts.includes(chartType) && (
-                        <Text style={styles.checkmark}>✓</Text>
+                        <MaterialIcons name="check" size={12} color="white" />
                       )}
                     </View>
                     <Text style={styles.chartOptionText}>{chartTitleMap[chartType]}</Text>
@@ -406,85 +420,104 @@ const PieChartComponent: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    borderBottomWidth: 1,
-    borderColor: 'white',
+    // backgroundColor: '#1F3B60',
+    borderRadius: 5,
+    padding: 0,
     marginBottom: 20,
-    paddingBottom: 20,
+    // borderWidth: 1,
+    borderColor: '#ffffff33',
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 8,
+  },
+  headerWithIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    color: '#90CAF9',
+    fontWeight: '700',
   },
   topButtonRow: {
     flexDirection: 'row',
-    margin: 10,
-    marginBottom: 15,
-    gap: 10,
+    marginBottom: 16,
+    gap: 12,
   },
   datePickerButton: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#0B1A2F',
+    backgroundColor: '#1C1C1E',
     borderWidth: 1,
-    borderColor: 'white',
+    borderColor: '#ffffff33',
     borderRadius: 8,
     padding: 12,
+    gap: 8,
   },
   addButton: {
-    backgroundColor: '#2ecc71',
+    backgroundColor: '#00B0FF',
     borderRadius: 8,
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingVertical: 12,
     justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'row',
+    gap: 6,
   },
   addButtonText: {
     color: 'white',
     fontSize: 14,
-    fontWeight: 'bold',
-  },
-  datePickerText: {
-    fontSize: 18,
-    marginRight: 10,
+    fontWeight: '600',
   },
   datePickerLabel: {
-    color: 'white',
+    color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: '500',
     flex: 1,
   },
   clearButton: {
-    padding: 5,
+    padding: 4,
   },
-  clearButtonText: {
-    color: '#7F7F7F',
+  chartTitle: {
+    color: '#FFFFFF',
     fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 12,
+    marginLeft: 4,
   },
-  title: {
-    color: 'white',
-    fontSize: 18,
-    textAlign: 'left',
-    fontWeight: 'bold',
-    marginBottom: 10,
-    marginLeft: 10,
+  chartContainer: {
+    // alignItems: 'center',
+    backgroundColor: 'rgba(144, 202, 249, 0.05)',
+    borderRadius: 12,
+    padding: 10,
   },
   toggleRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    padding: 10,
+    marginBottom: 16,
+    gap: 8,
   },
   toggleButton: {
-    paddingVertical: 6,
-    paddingHorizontal: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     borderWidth: 1,
-    borderColor: 'white',
+    borderColor: '#ffffff33',
     borderRadius: 8,
-    margin: 5,
+    backgroundColor: '#1C1C1E',
   },
   activeButton: {
-    backgroundColor: 'white',
+    backgroundColor: '#90CAF9',
+    borderColor: '#90CAF9',
   },
   toggleText: {
-    color: 'grey',
-    fontWeight: 'bold',
-    fontSize: 13,
+    color: '#90CAF9',
+    fontWeight: '600',
+    fontSize: 12,
   },
   activeText: {
     color: '#0B1A2F',
@@ -496,14 +529,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: '#0B1A2F',
-    borderRadius: 12,
+    backgroundColor: '#1F3B60',
+    borderRadius: 16,
     padding: 20,
     margin: 20,
     borderWidth: 1,
-    borderColor: 'white',
+    borderColor: '#ffffff33',
     maxWidth: 350,
     width: '90%',
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 8,
   },
   calendarHeader: {
     flexDirection: 'row',
@@ -512,17 +550,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   navButton: {
-    padding: 10,
-  },
-  navButtonText: {
-    color: 'white',
-    fontSize: 24,
-    fontWeight: 'bold',
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: '#1C1C1E',
   },
   monthTitle: {
-    color: 'white',
+    color: '#FFFFFF',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
   weekRow: {
     flexDirection: 'row',
@@ -534,9 +569,9 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   weekDayText: {
-    color: '#7F7F7F',
+    color: '#90CAF9',
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   calendarGrid: {
     marginBottom: 20,
@@ -553,89 +588,101 @@ const styles = StyleSheet.create({
     height: 40,
   },
   selectedDay: {
-    backgroundColor: '#3498db',
+    backgroundColor: '#00B0FF',
   },
   rangeDay: {
-    backgroundColor: 'rgba(52, 152, 219, 0.3)',
+    backgroundColor: 'rgba(0, 176, 255, 0.3)',
   },
   todayDay: {
     borderWidth: 1,
-    borderColor: '#3498db',
+    borderColor: '#00B0FF',
   },
   calendarDayText: {
-    color: 'white',
+    color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   selectedDayText: {
     color: 'white',
   },
   rangeDayText: {
-    color: '#3498db',
+    color: '#00B0FF',
   },
   actionRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     borderTopWidth: 1,
-    borderTopColor: 'white',
+    borderTopColor: '#ffffff33',
     paddingTop: 15,
   },
   clearActionButton: {
     padding: 10,
   },
   clearActionText: {
-    color: '#7F7F7F',
+    color: '#90CAF9',
     fontSize: 14,
+    fontWeight: '500',
   },
   actionButtonsRight: {
     flexDirection: 'row',
+    gap: 8,
   },
   cancelButton: {
     padding: 10,
-    marginRight: 10,
   },
   cancelButtonText: {
-    color: '#7F7F7F',
+    color: '#90CAF9',
     fontSize: 14,
+    fontWeight: '500',
   },
   applyButton: {
-    backgroundColor: '#3498db',
+    backgroundColor: '#00B0FF',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
   },
   applyButtonDisabled: {
-    backgroundColor: '#2c3e50',
+    backgroundColor: '#1C1C1E',
   },
   applyButtonText: {
     color: 'white',
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   applyButtonTextDisabled: {
-    color: '#7F7F7F',
+    color: '#90CAF9',
   },
   // Add Modal Styles
   addModalContent: {
-    backgroundColor: '#0B1A2F',
-    borderRadius: 12,
+    backgroundColor: '#1F3B60',
+    borderRadius: 16,
     padding: 20,
     margin: 20,
     borderWidth: 1,
-    borderColor: 'white',
+    borderColor: '#ffffff33',
     maxWidth: 400,
     width: '90%',
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 8,
   },
-  addModalTitle: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
+  modalHeaderWithIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
     marginBottom: 8,
   },
+  addModalTitle: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '700',
+  },
   addModalSubtitle: {
-    color: '#7F7F7F',
+    color: '#90CAF9',
     fontSize: 14,
     textAlign: 'center',
     marginBottom: 20,
@@ -661,46 +708,43 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderWidth: 2,
-    borderColor: 'white',
+    borderColor: '#90CAF9',
     borderRadius: 4,
     marginRight: 12,
     justifyContent: 'center',
     alignItems: 'center',
   },
   checkboxChecked: {
-    backgroundColor: '#3498db',
-    borderColor: '#3498db',
-  },
-  checkmark: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: 'bold',
+    backgroundColor: '#00B0FF',
+    borderColor: '#00B0FF',
   },
   chartOptionText: {
-    color: 'white',
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '500',
   },
   chartItemCount: {
-    color: '#7F7F7F',
+    color: '#90CAF9',
     fontSize: 12,
+    fontWeight: '500',
   },
   addModalActions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderTopWidth: 1,
-    borderTopColor: 'white',
+    borderTopColor: '#ffffff33',
     paddingTop: 15,
   },
   addModalCancelButton: {
     padding: 10,
   },
   addModalCancelText: {
-    color: '#7F7F7F',
+    color: '#90CAF9',
     fontSize: 16,
+    fontWeight: '500',
   },
   addModalApplyButton: {
-    backgroundColor: '#3498db',
+    backgroundColor: '#00B0FF',
     paddingHorizontal: 24,
     paddingVertical: 10,
     borderRadius: 8,
@@ -708,7 +752,7 @@ const styles = StyleSheet.create({
   addModalApplyText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
 });
 

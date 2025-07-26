@@ -12,6 +12,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Print from 'expo-print';
 import { WebView } from 'react-native-webview';
 
+// import { fillPdfFormWithCardData } from '../utils/pdfFormHelper'; // Adjust path as needed
+
+
 type CardResult = {
   front: {
     rawText: string;
@@ -43,6 +46,24 @@ export default function ReviewCards() {
   const [pdfUri, setPdfUri] = useState<string | null>(null);
   const [pdfModalVisible, setPdfModalVisible] = useState(false);
 
+  // const handleAutoFillPDF = async (card: CardResult) => {
+  //   const doc = uploadedDocs.find((d) => d.name === 'Induction checklist');
+  //   if (!doc?.uri) {
+  //     return Alert.alert('Not Found', `Induction checklist not found.`);
+  //   }
+  
+  //   try {
+  //     const localPath = doc.uri.startsWith('file://') ? doc.uri : doc.uri.replace('file://', '');
+  //     const filledPdfUri = await fillPdfFormWithCardData(card, localPath);
+  //     console.log('✅ Filled form at:', filledPdfUri);
+  //     setPdfUri(filledPdfUri);
+  //     setPdfModalVisible(true);
+  //   } catch (error) {
+  //     console.log('❌ Error filling form:', error);
+  //     Alert.alert('Error', 'Could not fill the PDF form.');
+  //   }
+  // };
+  
   useEffect(() => {
     const loadCards = async () => {
       try {
@@ -127,22 +148,28 @@ export default function ReviewCards() {
                   <Text>✅</Text>
                 </View>
               </TouchableOpacity>
-              
+
               {/* PDF Links directly under each card */}
               <View style={styles.pdfLinksContainer}>
-                <TouchableOpacity 
+                <TouchableOpacity
                   onPress={() => handleConvertByName('PPE Sheet')}
                   style={styles.pdfLinkButton}
                 >
                   <Text style={styles.pdfLinkText}>PPE Sheet</Text>
                 </TouchableOpacity>
-                
-                <TouchableOpacity 
+
+                <TouchableOpacity
                   onPress={() => handleConvertByName('Induction checklist')}
                   style={styles.pdfLinkButton}
                 >
                   <Text style={styles.pdfLinkText}>Induction Checklist</Text>
                 </TouchableOpacity>
+                {/* <TouchableOpacity
+                  onPress={() => handleAutoFillPDF(card.result!)}
+                  style={styles.pdfLinkButton}
+                >
+                  <Text style={styles.pdfLinkText}>🖊️ Sign Induction Form</Text>
+                </TouchableOpacity> */}
               </View>
             </View>
           ))}
@@ -217,7 +244,7 @@ export default function ReviewCards() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#1F3B60',
-    
+
     flex: 1,
     // padding: 20,
   },
